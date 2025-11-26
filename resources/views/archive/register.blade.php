@@ -194,7 +194,7 @@
                 <div class="info-pill light">
                   <span>Investasi</span>
                   <strong>Coming Soon</strong>
-                </div>
+            </div>
               </div>
               <div class="hero-visual" style="margin-top: 28px;">
                 <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Crest" style="width: clamp(220px, 35vw, 320px); filter: drop-shadow(0 25px 40px rgba(0,0,0,.35));">
@@ -368,8 +368,8 @@
                   <small class="err" data-err-for="satpamCard"></small>
                   <div id="satpamCardPreview" style="margin-top: 12px;">
                     <img id="satpamCardImage" src="" alt="Preview Kartu Satpam" style="display: none; max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid rgba(165,154,130,.4); box-shadow: 0 4px 12px rgba(0,0,0,.1);">
-                  </div>
-                </div>
+              </div>
+            </div>
                 <div id="umumInfo" style="display: none; background: rgba(238,223,157,.2); border: 1px solid rgba(238,223,157,.4); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
                   <p style="margin: 0; font-weight: 600; color: #2b2621; font-size: 16px;">Informasi Pembayaran</p>
                   <p style="margin: 8px 0 0; color: #5d5141; font-size: 14px;">Setelah mendaftar, Anda akan menerima email dengan informasi harga dan nomor rekening. Silakan hubungi admin via WhatsApp untuk konfirmasi pembayaran.</p>
