@@ -322,7 +322,7 @@
           </div>
           <div class="card" style="background: rgba(255,252,235,.9) !important; color: #2b2621 !important;">
             <h3 style="color: #2b2621 !important;">Butuh Bantuan?</h3>
-            <p style="color: #5d5141 !important;">Hubungi panitia di <a href="mailto:satpamfunrun@uho.ac.id" style="color: #282061 !important; text-decoration: underline;">satpamfunrun@uho.ac.id</a>.</p>
+            <p style="color: #5d5141 !important;">Hubungi panitia di <a href="mailto:satpamfunrun@uho.ac.id" style="color: #282061 !important; text-decoration: underline;">satpamfunrun@gmail.com</a>.</p>
             <p style="color: #5d5141 !important;">Kami akan membalas maksimal 2x24 jam kerja.</p>
           </div>
         </div>
