@@ -98,7 +98,7 @@
           <div class="logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
             <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="40" height="40" style="filter: none;">
           </div>
-          <span class="brand-name">Satpam Fun Run 5K</span>
+          <span class="brand-name">Satpam </span>
         </a>
         <button class="burger-menu" id="burgerMenu" aria-label="Toggle menu" aria-expanded="false">
           <span></span>
