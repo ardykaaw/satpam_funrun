@@ -43,6 +43,9 @@ Route::post('/registration/check-kta', [RegistrationController::class, 'checkKta
 Route::get('/registration/success/{id}', [RegistrationController::class, 'success'])->name('registration.success');
 Route::get('/registration/check', [RegistrationController::class, 'check'])->name('registration.check');
 Route::get('/registration/{registrationNumber}', [RegistrationController::class, 'show'])->name('registration.show');
+Route::get('/registration/barcode/{registrationNumber}', [RegistrationController::class, 'barcode'])
+    ->where('registrationNumber', '.*')
+    ->name('registration.barcode');
 
 // Serve static assets from arsip/Archive/assets safely
 Route::get('/assets/{path}', [ArchiveController::class, 'asset'])->where('path', '.*')->name('archive.asset');

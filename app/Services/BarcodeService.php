@@ -29,8 +29,8 @@ class BarcodeService
             $fullPath = storage_path('app/public/' . $path);
 
             QrCode::format('png')
-                ->size(300)
-                ->margin(2)
+                ->size(400) // Increased from 300 to 400 for better quality
+                ->margin(3) // Increased margin for better scanning
                 ->errorCorrection('H')
                 ->generate($data, $fullPath);
 
@@ -50,13 +50,25 @@ class BarcodeService
     public static function generateBarcodeBase64($data): string
     {
         try {
+            // Increase size for better visibility and compatibility
             $qrCode = QrCode::format('png')
-                ->size(300)
-                ->margin(2)
-                ->errorCorrection('H')
+                ->size(400) // Increased from 300 to 400 for better quality
+                ->margin(3) // Increased margin for better scanning
+                ->errorCorrection('H') // High error correction
                 ->generate($data);
 
-            return 'data:image/png;base64,' . base64_encode($qrCode);
+            $base64 = base64_encode($qrCode);
+            $result = 'data:image/png;base64,' . $base64;
+            
+            // Validate result
+            if (strlen($result) < 500) {
+                Log::warning('BarcodeService: Generated base64 seems too short', [
+                    'length' => strlen($result),
+                    'data' => $data,
+                ]);
+            }
+            
+            return $result;
         } catch (\Exception $e) {
             Log::error('Failed to generate barcode base64: ' . $e->getMessage());
             return '';

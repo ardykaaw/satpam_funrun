@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Registration;
 use App\Models\Settings;
 use App\Mail\RegistrationConfirmationMail;
+use App\Services\BarcodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -159,5 +160,67 @@ class RegistrationController extends Controller
         $exists = Registration::where('kta_number', $request->kta_number)->exists();
 
         return response()->json(['exists' => $exists]);
+    }
+
+    public function barcode($registrationNumber)
+    {
+        // URL decode the registration number
+        $decodedNumber = urldecode($registrationNumber);
+        
+        // Handle various formats: "SFR - 0213", "SFR-0213", "SFR%20-%200213"
+        $cleanNumber = str_replace([' ', '-'], '', $decodedNumber);
+        $withSpace = preg_replace('/([A-Z]+)(\d+)/', '$1 - $2', $cleanNumber);
+        $withDash = preg_replace('/([A-Z]+)(\d+)/', '$1-$2', $cleanNumber);
+        
+        $registration = Registration::where(function($query) use ($decodedNumber, $cleanNumber, $withSpace, $withDash) {
+                $query->where('registration_number', $decodedNumber)
+                      ->orWhere('registration_number', $cleanNumber)
+                      ->orWhere('registration_number', $withSpace)
+                      ->orWhere('registration_number', $withDash)
+                      ->orWhere('registration_number', 'like', str_replace(' ', '%', $decodedNumber));
+            })
+            ->where('status', 'approved')
+            ->firstOrFail();
+
+        // Generate barcode if not exists
+        $barcodePathToCheck = $registration->barcode ? str_replace('storage/', '', $registration->barcode) : null;
+        
+        // Try to find existing barcode file with various filename formats
+        $possibleFilenames = [
+            $barcodePathToCheck, // Original path from database
+            'barcodes/' . $registration->registration_number . '.png', // With spaces
+            'barcodes/' . str_replace(' ', '-', $registration->registration_number) . '.png', // With dashes
+            'barcodes/' . str_replace([' ', '-'], '', $registration->registration_number) . '.png', // No spaces/dashes
+        ];
+        
+        $foundBarcodePath = null;
+        foreach ($possibleFilenames as $possiblePath) {
+            if ($possiblePath && Storage::disk('public')->exists($possiblePath)) {
+                $foundBarcodePath = $possiblePath;
+                break;
+            }
+        }
+        
+        // If not found, generate new one
+        if (!$foundBarcodePath) {
+            $barcodePath = BarcodeService::generateBarcode(
+                $registration->registration_number,
+                $registration->registration_number // Use registration number as-is for filename
+            );
+            if ($barcodePath) {
+                $registration->update(['barcode' => $barcodePath]);
+                $foundBarcodePath = str_replace('storage/', '', $barcodePath);
+            }
+        }
+
+        if ($foundBarcodePath && Storage::disk('public')->exists($foundBarcodePath)) {
+            return response()->file(Storage::disk('public')->path($foundBarcodePath), [
+                'Content-Type' => 'image/png',
+                'Cache-Control' => 'public, max-age=31536000',
+                'Access-Control-Allow-Origin' => '*', // Allow email clients to load
+            ]);
+        }
+
+        abort(404, 'Barcode not found');
     }
 }

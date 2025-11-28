@@ -655,40 +655,18 @@
         </div>
       </section>
 
-      <section id="tentang" class="section">
-        <div class="container">
-          <div class="story-grid">
-            
-          </div>
-            
-            <div class="story-highlight">
-              <div class="stat-chip">
-                <span>Lokasi</span>
-                <strong>Coming Soon</strong>
-              </div>
-              <div class="stat-chip">
-                <span>Tanggal</span>
-                <strong>Minggu, 4 Januari 2026</strong>
-              </div>
-              <div class="stat-chip">
-                <span>Race Kit</span>
-                <strong>Coming Soon</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+     
 
       <section id="racekit" class="section racekit-section">
         <div class="container">
-          <h2 class="racekit-title" style="color: #fff !important; text-align: center; margin-bottom: 48px; font-size: 42px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.4);">Race Kit</h2>
+          <h2 class="racekit-title" style="color: #fff !important; text-align: center; margin-bottom: 48px; font-size: 42px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.4);">Benefit</h2>
           <div class="racekit-grid">
             <div class="racekit-item">
               <div class="racekit-icon-wrapper">
                 <img src="{{ url('/assets/SATPAM/icon/jersey.png') }}" alt="Jersey" class="racekit-icon">
               </div>
               <h3 class="racekit-item-title" style="color: #fff !important; margin-top: 16px; margin-bottom: 8px; font-size: 18px; font-weight: 700;">Jersey</h3>
-              <p class="racekit-item-desc" style="color: rgba(255,255,255,.85) !important; font-size: 13px; line-height: 1.5;">Kaos Eksklusif Untuk Peserta dengan Desain Khusus Event Ini.</p>
+              <p class="racekit-item-desc" style="color: rgba(255,255,255,.85) !important; font-size: 13px; line-height: 1.5;">Jersey Eksklusif Untuk Peserta dengan Desain Khusus Event Ini.</p>
             </div>
             
             <div class="racekit-item">
@@ -720,8 +698,8 @@
 
       <section id="rute" class="section alt">
         <div class="container">
-          <h2 style="color: #2b2621;">Rute Lomba</h2>
-          <p style="color: #5d5141;">Rute akan diumumkan segera. Informasi detail lokasi start dan finish akan tersedia dalam waktu dekat.</p>
+          <h2 style="color: #2b2621;">Race Course</h2>
+          
           <div class="route-card">
             <div class="route-map" style="display: flex; align-items: center; justify-content: center; min-height: 320px; background: rgba(40,32,97,.25); border: 1px solid rgba(238,223,157,.25); border-radius: 20px; padding: 48px;">
               <div style="text-align: center;">
@@ -743,12 +721,11 @@
 
       <section id="jadwal" class="section">
         <div class="container">
-          <h2 style="color: #2b2621;">Jadwal Kegiatan</h2>
+          <h2 style="color: #2b2621;">Rundown</h2>
           <div class="timeline-grid" style="margin-top: 24px;">
             <div class="timeline-card" style="background: rgba(255,252,235,.9) !important; color: #2b2621 !important; text-align: center; padding: 40px 24px;">
               <span style="color: #282061 !important; font-size: 18px;">Coming Soon</span>
-              <strong style="color: #2b2621 !important; display: block; margin-top: 12px;">Jadwal Kegiatan</strong>
-              <p style="color: #5d5141 !important; margin-top: 8px;">Jadwal lengkap kegiatan akan diumumkan segera.</p>
+              
             </div>
           </div>
           <div class="center" style="margin-top: 32px;">

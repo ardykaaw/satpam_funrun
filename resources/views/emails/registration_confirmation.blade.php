@@ -8,7 +8,27 @@
   <body style="font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif; background:#f7f7fb; margin:0; padding:24px;">
     <div style="max-width:640px; margin:0 auto; background:#ffffff; border-radius:12px; padding:32px; border:1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,.1);">
       <div style="text-align:center; margin-bottom:24px;">
-        <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run" style="height:64px; width:auto;">
+        @php
+          // Try multiple paths to find Logo file
+          $logoPath = null;
+          $possiblePaths = [
+            public_path('assets/SATPAM/Logo.png'),
+            base_path('assets/SATPAM/Logo.png'),
+            storage_path('app/public/assets/SATPAM/Logo.png'),
+          ];
+          
+          foreach ($possiblePaths as $path) {
+            if (file_exists($path)) {
+              $logoPath = $path;
+              break;
+            }
+          }
+        @endphp
+        @if($logoPath && file_exists($logoPath))
+          <img src="{{ $message->embed($logoPath) }}" alt="Satpam Fun Run" style="height:64px; width:auto;">
+        @else
+          <div style="height:64px; display:flex; align-items:center; justify-content:center; color:#282061; font-weight:700; font-size:20px;">Satpam Fun Run</div>
+        @endif
       </div>
       <h2 style="margin:0 0 8px; color:#232324; font-size:24px;">Terima Kasih Atas Pendaftaran Anda! 🎉</h2>
       <p style="margin:0 0 16px; color:#5d5141; line-height:1.6;">Halo <strong>{{ $registration->full_name }}</strong>,</p>
@@ -35,8 +55,52 @@
       </div>
 
       <div style="background:#fff3cd; border:1px solid #ffc107; border-radius:10px; padding:20px; margin:24px 0;">
-        <p style="margin:0 0 12px; color:#856404; font-weight:700; font-size:16px;">💳 Langkah Pembayaran</p>
+        <p style="margin:0 0 16px; color:#856404; font-weight:700; font-size:16px;">💳 Cara Pembayaran</p>
+        
+        <!-- QRIS Payment -->
+        <div style="margin-bottom:20px; padding:16px; background:#ffffff; border-radius:8px; border:1px solid #ffc107;">
+          <p style="margin:0 0 12px; color:#856404; font-weight:600; font-size:14px;">📱 Pembayaran via QRIS</p>
+          <div style="text-align:center; margin-bottom:12px;">
+            @php
+              // Try multiple paths to find QRIS file
+              $qrisPath = null;
+              $possiblePaths = [
+                public_path('assets/SATPAM/qris.jpeg'),
+                base_path('assets/SATPAM/qris.jpeg'),
+                storage_path('app/public/assets/SATPAM/qris.jpeg'),
+              ];
+              
+              foreach ($possiblePaths as $path) {
+                if (file_exists($path)) {
+                  $qrisPath = $path;
+                  break;
+                }
+              }
+            @endphp
+            @if($qrisPath && file_exists($qrisPath))
+              <img src="{{ $message->embed($qrisPath) }}" alt="QRIS" style="max-width:250px; width:100%; height:auto; border:2px solid #ffc107; border-radius:8px; padding:8px; background:#ffffff;">
+            @else
+              <p style="margin:0; color:#856404; font-size:13px;">QRIS akan tersedia segera</p>
+            @endif
+          </div>
+          <p style="margin:0; color:#856404; font-size:13px; line-height:1.6;">Scan QR Code di atas menggunakan aplikasi mobile banking atau e-wallet Anda untuk melakukan pembayaran.</p>
+        </div>
+        
+        <!-- Manual Transfer -->
+        <div style="margin-bottom:20px; padding:16px; background:#ffffff; border-radius:8px; border:1px solid #ffc107;">
+          <p style="margin:0 0 12px; color:#856404; font-weight:600; font-size:14px;">🏦 Transfer Manual ke Bank BRI</p>
+          <div style="background:#f8f9fa; padding:12px; border-radius:6px; margin-bottom:12px;">
+            <p style="margin:0 0 8px; color:#856404; font-size:13px;"><strong>Nomor Rekening:</strong></p>
+            <p style="margin:0 0 4px; color:#282061; font-size:18px; font-weight:700; letter-spacing:1px;">0192 0100 2100 562</p>
+            <p style="margin:8px 0 0; color:#856404; font-size:13px;"><strong>Atas Nama:</strong> <span style="color:#282061; font-weight:600;">SUSI ROSANTI</span></p>
+          </div>
+          <p style="margin:0; color:#856404; font-size:13px; line-height:1.6;">Transfer sesuai nominal yang tertera di atas (Rp {{ number_format($registration->unique_price_code, 0, ',', '.') }})</p>
+        </div>
+        
+        <!-- Payment Steps -->
+        <p style="margin:0 0 12px; color:#856404; font-weight:600; font-size:14px;">📋 Langkah Pembayaran</p>
         <ol style="margin:0; padding-left:20px; color:#856404; line-height:1.8;">
+          <li style="margin-bottom:8px;">Pilih metode pembayaran (QRIS atau Transfer Manual)</li>
           <li style="margin-bottom:8px;">Transfer sesuai nominal yang tertera di atas</li>
           <li style="margin-bottom:8px;">Setelah transfer, klik tombol "Hubungi Admin via WhatsApp" di bawah</li>
           <li style="margin-bottom:8px;">Kirim bukti transfer dan konfirmasi pembayaran Anda</li>

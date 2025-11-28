@@ -88,6 +88,66 @@
       .err {
         color: #f18b8b !important;
       }
+      /* Size Chart Modal */
+      .size-chart-modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        overflow: auto;
+        animation: fadeIn 0.3s;
+      }
+      .size-chart-modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .size-chart-modal-content {
+        position: relative;
+        max-width: 90%;
+        max-height: 90%;
+        margin: auto;
+        animation: zoomIn 0.3s;
+      }
+      .size-chart-modal-content img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      }
+      .size-chart-modal-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        transition: background 0.2s;
+      }
+      .size-chart-modal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes zoomIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
       /* Fix mobile menu z-index - ensure menu is always on top */
       @media (max-width: 768px) {
         /* Menu must be highest - use maximum z-index */
@@ -324,9 +384,13 @@
                 <div class="form-section-title" style="color: #2b2621;">Race Pack</div>
             <div class="field">
               <label>Tabel Ukuran</label>
-              <div style="margin-bottom: 12px; padding: 24px; background: rgba(255,255,255,.7); border: 1px solid rgba(165,154,130,.4); border-radius: 12px; text-align: center;">
-                <p style="margin: 0; color: #5d5141; font-size: 16px; font-weight: 600;">Coming Soon</p>
-                <p style="margin: 8px 0 0; color: #5d5141; font-size: 14px;">Tabel ukuran jersey akan diumumkan segera.</p>
+              <div style="margin-bottom: 12px; padding: 16px; background: rgba(255,255,255,.7); border: 1px solid rgba(165,154,130,.4); border-radius: 12px; text-align: center;">
+                <p style="margin: 0 0 12px; color: #5d5141; font-size: 14px; font-weight: 600;">Klik gambar untuk memperbesar</p>
+                <img src="{{ url('/assets/SATPAM/Materi-Size-Chart.png') }}" 
+                     alt="Size Chart" 
+                     id="sizeChartImg"
+                     style="max-width: 100%; height: auto; cursor: pointer; border-radius: 8px; border: 2px solid rgba(165,154,130,.4); transition: transform 0.2s;"
+                     onclick="openSizeChartModal()">
               </div>
             </div>
 
@@ -413,6 +477,15 @@
         </div>
       </section>
     </main>
+    
+    <!-- Size Chart Modal -->
+    <div id="sizeChartModal" class="size-chart-modal" onclick="closeSizeChartModal(event)">
+      <div class="size-chart-modal-content" onclick="event.stopPropagation()">
+        <span class="size-chart-modal-close" onclick="closeSizeChartModal(event)">&times;</span>
+        <img src="{{ url('/assets/SATPAM/Materi-Size-Chart.png') }}" alt="Size Chart">
+      </div>
+    </div>
+    
     <footer class="site-footer">
       <div class="container footer-inner">
         <div class="footer-brand">
@@ -716,6 +789,33 @@
           }
         });
       }
+      
+      // Size Chart Modal functions
+      function openSizeChartModal() {
+        const modal = document.getElementById('sizeChartModal');
+        if (modal) {
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+      
+      function closeSizeChartModal(event) {
+        if (event) {
+          event.stopPropagation();
+        }
+        const modal = document.getElementById('sizeChartModal');
+        if (modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      }
+      
+      // Close modal on Escape key
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeSizeChartModal();
+        }
+      });
     </script>
   </body>
   </html>
