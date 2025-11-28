@@ -39,6 +39,7 @@ Route::view('/event/success', 'archive.success')->name('archive.success');
 
 // Registration routes
 Route::post('/event/register', [RegistrationController::class, 'store'])->name('registration.store');
+Route::post('/registration/check-kta', [RegistrationController::class, 'checkKta'])->name('registration.check-kta');
 Route::get('/registration/success/{id}', [RegistrationController::class, 'success'])->name('registration.success');
 Route::get('/registration/check', [RegistrationController::class, 'check'])->name('registration.check');
 Route::get('/registration/{registrationNumber}', [RegistrationController::class, 'show'])->name('registration.show');

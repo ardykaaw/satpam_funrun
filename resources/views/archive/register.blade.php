@@ -141,13 +141,13 @@
     </style>
   </head>
   <body>
-    <header class="site-header sub">
+    <header class="site-header">
       <div class="container header-inner">
         <a href="/" class="brand">
           <div class="logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
-            <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="40" height="40" style="filter: none;">
+            <img src="{{ url('/assets/SATPAM/logo-navbar.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="160" height="64" style="filter: none;">
           </div>
-          <span class="brand-name">Satpam Fun Run 5K</span>
+          <span class="brand-name"></span>
         </a>
         <button class="burger-menu" id="burgerMenu" aria-label="Toggle menu" aria-expanded="false">
           <span></span>
@@ -163,12 +163,15 @@
             </svg>
           </button>
           <div class="nav-links">
-          <a href="/" onclick="closeMobileMenu()">Beranda</a>
-            <a href="{{ route('registration.check') }}" onclick="closeMobileMenu()">Cek Status</a>
+          <a href="/#tentang" onclick="closeMobileMenu()">Tentang</a>
+          <a href="/#rute" onclick="closeMobileMenu()">Rute</a>
+          <a href="/#jadwal" onclick="closeMobileMenu()">Jadwal</a>
+          <a href="/#faq" onclick="closeMobileMenu()">FAQ</a>
           </div>
           <div class="nav-cta">
             <span class="nav-badge">Edisi 2025</span>
-            <a href="{{ url('/event/register') }}" class="btn btn-cta btn-sm" onclick="closeMobileMenu()">Daftar</a>
+            <a href="{{ route('registration.check') }}" class="btn btn-ghost btn-sm" onclick="closeMobileMenu()">Cek Status</a>
+            <a href="{{ url('/event/register') }}" class="btn btn-cta btn-sm" onclick="closeMobileMenu()" style="background: linear-gradient(135deg, #eedf9d, #d4c48a) !important; color: #232324 !important; border: none !important; font-weight: 800 !important;">Daftar</a>
           </div>
         </nav>
       </div>
@@ -203,6 +206,18 @@
             <div class="form-panel">
               <h2 style="color: #2b2621;">Data Peserta</h2>
               <p class="muted" style="color: #5d5141;">Berikut informasi yang dibutuhkan panitia untuk memproses registrasi Anda.</p>
+              
+              @if($errors->any())
+                <div style="background: rgba(241,139,139,.15); border: 1px solid #f18b8b; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                  <p style="margin: 0 0 8px; color: #d32f2f; font-weight: 600;">Terjadi kesalahan:</p>
+                  <ul style="margin: 0; padding-left: 20px; color: #d32f2f;">
+                    @foreach($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                    @endforeach
+                  </ul>
+                </div>
+              @endif
+              
               <form id="registerForm" class="form" action="{{ route('registration.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
@@ -261,10 +276,17 @@
               </div>
             </div>
 
-            <div class="field">
+            <div class="field" id="occupationField">
               <label for="occupation">Pekerjaan <span style="color: var(--danger);">*</span></label>
-              <input id="occupation" name="occupation" type="text" required placeholder="Pekerjaan">
+              <input id="occupation" name="occupation" type="text" placeholder="Pekerjaan">
               <small class="err" data-err-for="occupation"></small>
+            </div>
+
+            <div class="field" id="ktaField" style="display: none;">
+              <label for="ktaNumber">Nomor KTA <span style="color: var(--danger);">*</span></label>
+              <input id="ktaNumber" name="ktaNumber" type="text" placeholder="Nomor KTA Satpam">
+              <small class="muted">Nomor Kartu Tanda Anggota Satpam</small>
+              <small class="err" data-err-for="ktaNumber"></small>
             </div>
 
                 <div class="form-section-title" style="color: #2b2621;">Identitas & Alamat</div>
@@ -373,7 +395,7 @@
                 <div id="umumInfo" style="display: none; background: rgba(238,223,157,.2); border: 1px solid rgba(238,223,157,.4); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
                   <p style="margin: 0; font-weight: 600; color: #2b2621; font-size: 16px;">Informasi Pembayaran</p>
                   <p style="margin: 8px 0 0; color: #5d5141; font-size: 14px;">Setelah mendaftar, Anda akan menerima email dengan informasi harga dan nomor rekening. Silakan hubungi admin via WhatsApp untuk konfirmasi pembayaran.</p>
-                </div>
+            </div>
 
             <div class="field checkbox">
               <input id="consent" name="consent" type="checkbox" required>
@@ -395,12 +417,14 @@
       <div class="container footer-inner">
         <div class="footer-brand">
           <div class="logo-wrapper footer-logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
-            <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run" width="28" height="28" class="footer-logo" style="filter: none;">
+            <img src="{{ url('/assets/SATPAM/logo-navbar.png') }}" alt="Satpam Fun Run" width="120" height="60" class="footer-logo" style="filter: none;">
           </div>
-          <span>Satpam Fun Run 5K</span>
         </div>
         <div class="footer-links">
-          <a href="/">Beranda</a>
+          <a href="/#tentang">Tentang</a>
+          <a href="/#rute">Rute</a>
+          <a href="/#jadwal">Jadwal</a>
+          <a href="/#faq">FAQ</a>
           <a href="{{ url('/event/register') }}" class="btn btn-sm">Daftar</a>
         </div>
       </div>
@@ -454,6 +478,10 @@
       const satpamCardUpload = document.getElementById('satpamCardUpload');
       const satpamCard = document.getElementById('satpamCard');
       const umumInfo = document.getElementById('umumInfo');
+      const occupationField = document.getElementById('occupationField');
+      const occupation = document.getElementById('occupation');
+      const ktaField = document.getElementById('ktaField');
+      const ktaNumber = document.getElementById('ktaNumber');
       
       if (categoryType) {
         categoryType.addEventListener('change', function() {
@@ -464,16 +492,77 @@
             satpamCardUpload.style.display = 'block';
             satpamCard.setAttribute('required', 'required');
             umumInfo.style.display = 'none';
+            // Hide occupation field and set value to "Satpam"
+            occupationField.style.display = 'none';
+            occupation.removeAttribute('required');
+            occupation.value = 'Satpam';
+            // Show KTA field and make it required
+            ktaField.style.display = 'block';
+            ktaNumber.setAttribute('required', 'required');
           } else if (selectedType === 'umum') {
             category.value = 'Umum';
             satpamCardUpload.style.display = 'none';
             satpamCard.removeAttribute('required');
             satpamCard.value = '';
             umumInfo.style.display = 'block';
+            // Show occupation field and make it required
+            occupationField.style.display = 'block';
+            occupation.setAttribute('required', 'required');
+            occupation.value = '';
+            // Hide KTA field and clear value
+            ktaField.style.display = 'none';
+            ktaNumber.removeAttribute('required');
+            ktaNumber.value = '';
           } else {
             satpamCardUpload.style.display = 'none';
             umumInfo.style.display = 'none';
             satpamCard.removeAttribute('required');
+            // Show occupation field by default
+            occupationField.style.display = 'block';
+            occupation.setAttribute('required', 'required');
+            occupation.value = '';
+            // Hide KTA field
+            ktaField.style.display = 'none';
+            ktaNumber.removeAttribute('required');
+            ktaNumber.value = '';
+          }
+        });
+      }
+      
+      // Check KTA number uniqueness on blur
+      if (ktaNumber) {
+        ktaNumber.addEventListener('blur', function() {
+          const ktaValue = this.value.trim();
+          if (ktaValue && categoryType.value === 'satpam') {
+            fetch('{{ route("registration.check-kta") }}', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+              },
+              body: JSON.stringify({ kta_number: ktaValue })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.exists) {
+                const errEl = document.querySelector('[data-err-for="ktaNumber"]');
+                if (errEl) {
+                  errEl.textContent = 'Nomor KTA ini sudah terdaftar.';
+                  errEl.style.display = 'block';
+                  ktaNumber.setCustomValidity('Nomor KTA sudah terdaftar');
+                }
+              } else {
+                const errEl = document.querySelector('[data-err-for="ktaNumber"]');
+                if (errEl) {
+                  errEl.textContent = '';
+                  errEl.style.display = 'none';
+                  ktaNumber.setCustomValidity('');
+                }
+              }
+            })
+            .catch(error => {
+              console.error('Error checking KTA:', error);
+            });
           }
         });
       }
@@ -554,6 +643,30 @@
             }
           }
           
+          // Validate occupation for umum category
+          if (categoryType.value === 'umum') {
+            const occupation = document.getElementById('occupation');
+            if (!occupation || !occupation.value || occupation.value.trim() === '') {
+              e.preventDefault();
+              alert('Pekerjaan wajib diisi untuk kategori Umum.');
+              if (occupation) occupation.focus();
+              hasError = true;
+              return false;
+            }
+          }
+          
+          // Validate KTA for satpam category
+          if (categoryType.value === 'satpam') {
+            const ktaNumber = document.getElementById('ktaNumber');
+            if (!ktaNumber || !ktaNumber.value || ktaNumber.value.trim() === '') {
+              e.preventDefault();
+              alert('Nomor KTA wajib diisi untuk kategori Korps Satpam.');
+              if (ktaNumber) ktaNumber.focus();
+              hasError = true;
+              return false;
+            }
+          }
+          
           // Validate consent checkbox
           const consent = document.getElementById('consent');
           if (!consent || !consent.checked) {
@@ -573,6 +686,12 @@
               submitBtn.disabled = true;
               submitBtn.textContent = 'Mengirim...';
             }
+            // Don't prevent default - allow form to submit
+            return true;
+          } else {
+            // Prevent submission if there are errors
+            e.preventDefault();
+            return false;
           }
         });
       }

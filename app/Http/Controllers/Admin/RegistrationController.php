@@ -66,29 +66,70 @@ class RegistrationController extends Controller
             'admin_notes' => 'nullable|string|max:1000',
         ]);
 
-        // Generate registration number if not exists or format is old (not SFR5xxx)
-        if (!$registration->registration_number || !preg_match('/^SFR5\d{4}$/', $registration->registration_number)) {
+        // Generate registration number if not exists or format is old (not SFR - XXXX or SFR5xxx)
+        if (!$registration->registration_number || 
+            (!preg_match('/^SFR\s*-\s*\d{4}$/', $registration->registration_number) && 
+             !preg_match('/^SFR5\d{4}$/', $registration->registration_number))) {
             $registration->registration_number = Registration::generateRegistrationNumber();
+            Log::info('Generated registration number', [
+                'registration_id' => $registration->id,
+                'registration_number' => $registration->registration_number,
+            ]);
         }
 
-        // Generate barcode if not exists
-        if (!$registration->barcode && $registration->registration_number) {
-            $barcodePath = BarcodeService::generateBarcode(
-                $registration->registration_number,
-                $registration->registration_number
-            );
+        // Always generate barcode if registration number exists (regenerate if missing or invalid)
+        $barcodePath = null;
+        if ($registration->registration_number) {
+            $barcodePathToCheck = $registration->barcode ? str_replace('storage/', '', $registration->barcode) : null;
             
-            if ($barcodePath) {
-                $registration->barcode = $barcodePath;
+            // Check if barcode file exists, if not generate new one
+            if (!$registration->barcode || !Storage::disk('public')->exists($barcodePathToCheck)) {
+                Log::info('Generating barcode for registration', [
+                    'registration_id' => $registration->id,
+                    'registration_number' => $registration->registration_number,
+                    'existing_barcode' => $registration->barcode,
+                ]);
+                
+                $barcodePath = BarcodeService::generateBarcode(
+                    $registration->registration_number,
+                    $registration->registration_number
+                );
+                
+                if ($barcodePath) {
+                    Log::info('Barcode generated successfully', [
+                        'barcode_path' => $barcodePath,
+                    ]);
+                } else {
+                    Log::error('Failed to generate barcode', [
+                        'registration_id' => $registration->id,
+                        'registration_number' => $registration->registration_number,
+                    ]);
+                }
+            } else {
+                $barcodePath = $registration->barcode;
+                Log::info('Using existing barcode', [
+                    'barcode_path' => $barcodePath,
+                ]);
             }
         }
 
+        // Update registration with all data (including registration_number and barcode)
         $registration->update([
+            'registration_number' => $registration->registration_number,
             'status' => 'approved',
             'payment_status' => 'verified',
             'admin_notes' => $request->admin_notes,
             'approved_at' => now(),
             'rejected_at' => null,
+            'barcode' => $barcodePath ?? $registration->barcode,
+        ]);
+        
+        // Refresh registration to ensure we have latest data
+        $registration->refresh();
+        
+        Log::info('Registration approved and saved', [
+            'registration_id' => $registration->id,
+            'registration_number' => $registration->registration_number,
             'barcode' => $registration->barcode,
         ]);
 

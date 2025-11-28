@@ -31,7 +31,8 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
      */
     public function collection()
     {
-        $query = Registration::where('status', 'approved');
+        // Include both approved and rejected registrations
+        $query = Registration::whereIn('status', ['approved', 'rejected']);
 
         if ($this->searchKeyword) {
             $search = trim($this->searchKeyword);
@@ -41,11 +42,12 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('phone', 'like', "%{$search}%")
                     ->orWhere('registration_number', 'like', "%{$search}%")
-                    ->orWhere('category', 'like', "%{$search}%");
+                    ->orWhere('category', 'like', "%{$search}%")
+                    ->orWhere('kta_number', 'like', "%{$search}%");
             });
         }
 
-        return $query->orderByDesc('approved_at')->get();
+        return $query->orderByDesc('created_at')->get();
     }
 
     /**
@@ -63,12 +65,15 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
             'Jenis Kelamin',
             'Kategori',
             'Tipe Kategori',
+            'No. KTA',
             'Harga Unik',
             'Ukuran Jersey',
             'Golongan Darah',
             'Alamat',
             'Kota',
-            'Tanggal Disetujui',
+            'Status',
+            'Alasan Penolakan (Jika Ditolak)',
+            'Tanggal Disetujui/Ditolak',
         ];
     }
 
@@ -78,8 +83,24 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
      */
     public function map($participant): array
     {
+        $status = ucfirst($participant->status);
+        $rejectionReason = '';
+        
+        // If rejected and category is satpam, show admin_notes as reason
+        if ($participant->status === 'rejected' && $participant->category_type === 'satpam') {
+            $rejectionReason = $participant->admin_notes ?? 'Tidak disebutkan';
+        } elseif ($participant->status === 'rejected') {
+            $rejectionReason = $participant->admin_notes ?? 'Tidak disebutkan';
+        }
+        
+        $dateColumn = $participant->approved_at 
+            ? $participant->approved_at->format('d/m/Y H:i') 
+            : ($participant->rejected_at 
+                ? $participant->rejected_at->format('d/m/Y H:i') 
+                : '-');
+        
         return [
-            $participant->registration_number,
+            $participant->registration_number ?? '-',
             $participant->full_name,
             $participant->bib_name ?? '-',
             $participant->email,
@@ -88,12 +109,15 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
             $participant->gender ?? '-',
             $participant->category,
             $participant->category_type ? ($participant->category_type === 'satpam' ? 'Korps Satpam' : 'Umum') : '-',
+            $participant->kta_number ?? '-',
             $participant->unique_price_code ? 'Rp ' . number_format($participant->unique_price_code, 0, ',', '.') : '-',
             $participant->jersey_size ?? '-',
             $participant->blood_type ?? '-',
             $participant->address ?? '-',
             $participant->city ?? '-',
-            $participant->approved_at ? $participant->approved_at->format('d/m/Y H:i') : '-',
+            $status,
+            $rejectionReason,
+            $dateColumn,
         ];
     }
 
@@ -124,12 +148,15 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 $sheet->getColumnDimension('G')->setWidth(15);
                 $sheet->getColumnDimension('H')->setWidth(25);
                 $sheet->getColumnDimension('I')->setWidth(15);
-                $sheet->getColumnDimension('J')->setWidth(18);
-                $sheet->getColumnDimension('K')->setWidth(15);
+                $sheet->getColumnDimension('J')->setWidth(15);
+                $sheet->getColumnDimension('K')->setWidth(18);
                 $sheet->getColumnDimension('L')->setWidth(15);
-                $sheet->getColumnDimension('M')->setWidth(40);
-                $sheet->getColumnDimension('N')->setWidth(20);
+                $sheet->getColumnDimension('M')->setWidth(15);
+                $sheet->getColumnDimension('N')->setWidth(40);
                 $sheet->getColumnDimension('O')->setWidth(20);
+                $sheet->getColumnDimension('P')->setWidth(15);
+                $sheet->getColumnDimension('Q')->setWidth(40);
+                $sheet->getColumnDimension('R')->setWidth(20);
 
                 // Header dengan judul
                 $sheet->setCellValue('A1', 'SATPAM FUN RUN 5K');
@@ -161,8 +188,8 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 ]);
 
                 // Merge cells untuk judul
-                $sheet->mergeCells('A1:O1');
-                $sheet->mergeCells('A2:O2');
+                $sheet->mergeCells('A1:R1');
+                $sheet->mergeCells('A2:R2');
 
                 // Set row height untuk header
                 $sheet->getRowDimension(1)->setRowHeight(30);
@@ -170,7 +197,7 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 $sheet->getRowDimension(6)->setRowHeight(30);
 
                 // Style untuk header tabel (row 6)
-                $headerRange = 'A6:O6';
+                $headerRange = 'A6:R6';
                 $sheet->getStyle($headerRange)->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -197,7 +224,7 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 // Style untuk data rows
                 $lastRow = $sheet->getHighestRow();
                 if ($lastRow > 6) {
-                    $dataRange = 'A7:O' . $lastRow;
+                    $dataRange = 'A7:R' . $lastRow;
                     $sheet->getStyle($dataRange)->applyFromArray([
                         'borders' => [
                             'allBorders' => [
@@ -225,7 +252,7 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 }
 
                 // Center alignment untuk kolom tertentu
-                $centerColumns = ['A', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'O'];
+                $centerColumns = ['A', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'P'];
                 foreach ($centerColumns as $col) {
                     if ($lastRow > 6) {
                         $sheet->getStyle($col . '7:' . $col . $lastRow)->applyFromArray([

@@ -68,13 +68,13 @@
     </style>
   </head>
   <body>
-    <header class="site-header sub">
+    <header class="site-header">
       <div class="container header-inner">
         <a href="/" class="brand">
           <div class="logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
-            <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="40" height="40" style="filter: none;">
+            <img src="{{ url('/assets/SATPAM/logo-navbar.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="160" height="64" style="filter: none;">
           </div>
-          <span class="brand-name">Satpam Fun Run 5K</span>
+          <span class="brand-name"></span>
         </a>
         <button class="burger-menu" id="burgerMenu" aria-label="Toggle menu" aria-expanded="false">
           <span></span>
@@ -90,12 +90,15 @@
             </svg>
           </button>
           <div class="nav-links">
-          <a href="/" onclick="closeMobileMenu()">Beranda</a>
-            <a href="{{ url('/event/register') }}" onclick="closeMobileMenu()">Daftar</a>
+          <a href="/#tentang" onclick="closeMobileMenu()">Tentang</a>
+          <a href="/#rute" onclick="closeMobileMenu()">Rute</a>
+          <a href="/#jadwal" onclick="closeMobileMenu()">Jadwal</a>
+          <a href="/#faq" onclick="closeMobileMenu()">FAQ</a>
           </div>
           <div class="nav-cta">
             <span class="nav-badge">Edisi 2025</span>
-            <a href="{{ route('registration.check') }}" class="btn btn-cta btn-sm" onclick="closeMobileMenu()">Cek Status</a>
+            <a href="{{ route('registration.check') }}" class="btn btn-ghost btn-sm" onclick="closeMobileMenu()">Cek Status</a>
+            <a href="{{ url('/event/register') }}" class="btn btn-cta btn-sm" onclick="closeMobileMenu()" style="background: linear-gradient(135deg, #eedf9d, #d4c48a) !important; color: #232324 !important; border: none !important; font-weight: 800 !important;">Daftar</a>
           </div>
         </nav>
       </div>
@@ -231,12 +234,14 @@
       <div class="container footer-inner">
         <div class="footer-brand">
           <div class="logo-wrapper footer-logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
-            <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run" width="28" height="28" class="footer-logo" style="filter: none;">
+            <img src="{{ url('/assets/SATPAM/logo-navbar.png') }}" alt="Satpam Fun Run" width="120" height="60" class="footer-logo" style="filter: none;">
           </div>
-          <span>Satpam Fun Run 5K</span>
         </div>
         <div class="footer-links">
-          <a href="/">Beranda</a>
+          <a href="/#tentang">Tentang</a>
+          <a href="/#rute">Rute</a>
+          <a href="/#jadwal">Jadwal</a>
+          <a href="/#faq">FAQ</a>
           <a href="{{ url('/event/register') }}" class="btn btn-sm">Daftar</a>
         </div>
       </div>

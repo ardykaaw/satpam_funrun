@@ -102,6 +102,16 @@
                                     </div>
                                 </div>
                                 @endif
+                                @if($registration->category_type === 'satpam' && $registration->kta_number)
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">No. KTA</label>
+                                        <div class="form-control-plaintext">
+                                            <strong class="text-info">{{ $registration->kta_number }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
 
                             <hr>

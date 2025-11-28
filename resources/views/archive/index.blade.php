@@ -89,6 +89,418 @@
       .card a:hover {
         color: #665d6c !important;
       }
+      /* SOLUSI LANGSUNG: Buat countdown-wrapper benar-benar transparan dan tidak menambah spacing */
+      /* Body harus relative untuk absolute positioning */
+      body {
+        position: relative;
+      }
+      
+      /* Countdown-wrapper harus absolute positioned agar tidak menambah spacing */
+      .countdown-wrapper {
+        position: absolute !important;
+        top: 80px !important;
+        right: 0 !important;
+        left: auto !important;
+        width: auto !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        max-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        padding-top: 8px !important;
+        padding-right: 24px !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        line-height: 0 !important;
+        overflow: visible !important;
+        z-index: 99;
+        pointer-events: none;
+      }
+      
+      .top-countdown {
+        position: relative;
+        pointer-events: auto;
+      }
+      
+      /* Pastikan main langsung dimulai dari bawah header tanpa spacing */
+      main {
+        margin: 0 !important;
+        margin-top: 0 !important;
+        padding: 0 !important;
+        padding-top: 0 !important;
+      }
+      
+      /* Pastikan hero langsung dimulai */
+      .hero {
+        margin: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 80px !important;
+      }
+      
+      /* Perbaiki spasi putih di bawah navbar - HILANGKAN SEMUA SPASI PUTIH */
+      /* Pastikan body dan html tidak memiliki background putih */
+      html, body {
+        background-color: transparent !important;
+      }
+      
+      /* Pastikan header tidak ada spacing di bawah */
+      .site-header {
+        margin: 0 !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+        padding-bottom: 0 !important;
+      }
+      
+      /* Pastikan header-inner tidak menambah spacing */
+      .header-inner {
+        margin: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+      }
+      
+      /* Pastikan tidak ada spacing antara header dan countdown - HILANGKAN SEMUA SPASI */
+      header.site-header + .countdown-wrapper {
+        margin: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 0 !important;
+        padding-top: 8px !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 24px !important;
+        line-height: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+      }
+      
+      /* Pastikan tidak ada spacing vertikal dari line-height atau font-size */
+      header.site-header + .countdown-wrapper::before,
+      header.site-header + .countdown-wrapper::after {
+        display: none !important;
+        content: none !important;
+        height: 0 !important;
+        line-height: 0 !important;
+      }
+      
+      /* Pastikan countdown-wrapper tidak memiliki background putih */
+      .countdown-wrapper {
+        background: transparent !important;
+        background-color: transparent !important;
+      }
+      
+      /* Pastikan tidak ada elemen yang menambah spacing di antara header dan main */
+      header.site-header ~ *:not(.countdown-wrapper) {
+        margin-top: 0 !important;
+      }
+      
+      /* Pastikan main tidak ada margin-top yang menyebabkan spacing */
+      main {
+        margin: 0 !important;
+        margin-top: 0 !important;
+        padding: 0 !important;
+        padding-top: 0 !important;
+      }
+      
+      /* Pastikan hero tidak menambah spacing di atas dan langsung mulai dari atas */
+      .hero {
+        margin: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 80px !important;
+        position: relative;
+      }
+      
+      /* Pastikan container tidak menambah spacing */
+      .container {
+        margin-top: 0 !important;
+      }
+      
+      /* Pastikan tidak ada elemen yang memiliki background putih di antara header dan hero */
+      header.site-header ~ .countdown-wrapper ~ main .hero,
+      header.site-header ~ main .hero {
+        margin-top: 0 !important;
+        padding-top: 80px !important;
+      }
+      
+      /* Pastikan countdown-wrapper tidak menambah tinggi yang menyebabkan spasi putih */
+      .countdown-wrapper {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        line-height: 0 !important;
+      }
+      
+      /* Pastikan main langsung dimulai dari bawah header tanpa spasi */
+      header.site-header + .countdown-wrapper + main {
+        margin: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: normal !important;
+      }
+      
+      /* Pastikan tidak ada spacing dari main::before atau main::after */
+      main::before,
+      main::after {
+        display: none !important;
+        content: none !important;
+        height: 0 !important;
+        line-height: 0 !important;
+      }
+      
+      /* Pastikan hero langsung dimulai tanpa spasi di atas */
+      main > .hero:first-child {
+        margin-top: 0 !important;
+        padding-top: 80px !important;
+      }
+      
+      /* Pastikan tidak ada elemen yang memiliki background putih di area countdown */
+      .countdown-wrapper * {
+        line-height: normal !important;
+      }
+      
+      /* Pastikan countdown-item tidak menambah spacing vertikal */
+      .countdown-item {
+        line-height: normal !important;
+        vertical-align: top !important;
+      }
+
+      /* === Perbesar logo navbar === */
+      .brand-logo {
+        width: 160px !important;
+        height: 64px !important;
+        object-fit: contain;
+      }
+      
+      /* === Perbaiki alignment menu navbar - Desktop view === */
+      @media (min-width: 769px) {
+        /* Container header-inner */
+        .header-inner {
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        
+        /* Brand di kiri - tidak mengambil terlalu banyak ruang */
+        .brand {
+          flex: 0 0 auto !important;
+          margin-right: auto !important;
+          order: 1;
+          max-width: 200px;
+        }
+        
+        /* Nav menu di kanan - pastikan benar-benar di kanan */
+        .nav {
+          flex: 0 0 auto !important;
+          margin-left: auto !important;
+          margin-right: 0 !important;
+          order: 2;
+          display: flex !important;
+          align-items: center !important;
+        }
+        
+        .nav-links {
+          flex: 0 0 auto !important;
+          display: flex !important;
+        }
+        
+        .nav-cta {
+          flex: 0 0 auto !important;
+          margin-left: 16px !important;
+          display: flex !important;
+        }
+        
+        /* Pastikan burger menu tidak muncul di desktop */
+        .burger-menu {
+          display: none !important;
+        }
+        
+        /* Pastikan nav-overlay tidak mengganggu di desktop */
+        .nav-overlay {
+          display: none !important;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .brand-logo {
+          width: 120px !important;
+          height: 60px !important;
+        }
+        .header-inner {
+          padding-top: 10px !important;
+          padding-bottom: 10px !important;
+        }
+      }
+
+      
+      .top-countdown {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        pointer-events: auto;
+      }
+      
+      .top-countdown .countdown-item {
+        background: rgba(255,255,255,.12);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(238,223,157,.25);
+        border-radius: 16px;
+        padding: 16px 20px;
+        min-width: 80px;
+        text-align: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+      
+      .top-countdown .countdown-number {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+        display: block;
+        margin-bottom: 6px;
+      }
+      
+      .top-countdown .countdown-label {
+        font-size: 11px;
+        color: rgba(255,255,255,.8);
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        font-weight: 600;
+      }
+      
+      /* Mobile: Countdown di bawah navbar, full width - TANPA BACKGROUND PUTIH */
+      @media (max-width: 768px) {
+        .site-header {
+          margin: 0 !important;
+          margin-bottom: 0 !important;
+          padding: 0 !important;
+          padding-bottom: 0 !important;
+        }
+        
+        .header-inner {
+          margin: 0 !important;
+          margin-bottom: 0 !important;
+          padding-top: 10px !important;
+          padding-bottom: 10px !important;
+        }
+        
+        .countdown-wrapper {
+          position: absolute !important;
+          top: 60px !important;
+          right: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
+          height: 0 !important;
+          min-height: 0 !important;
+          max-height: 0 !important;
+          padding: 0 !important;
+          padding-top: 8px !important;
+          margin: 0 !important;
+          background: transparent !important;
+          background-color: transparent !important;
+          background-image: none !important;
+          border: none !important;
+          box-shadow: none !important;
+          line-height: 0 !important;
+          overflow: visible !important;
+          z-index: 98;
+        }
+        
+        /* Pastikan tidak ada spacing dari pseudo-elements di mobile */
+        .countdown-wrapper::before,
+        .countdown-wrapper::after {
+          display: none !important;
+          content: none !important;
+          height: 0 !important;
+          line-height: 0 !important;
+        }
+        
+        main {
+          margin: 0 !important;
+          margin-top: 0 !important;
+          padding: 0 !important;
+          padding-top: 0 !important;
+        }
+        
+        .hero {
+          margin: 0 !important;
+          margin-top: 0 !important;
+          padding-top: 60px !important;
+        }
+        
+        .top-countdown {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0;
+          padding: 0 !important;
+          padding-left: 4px !important;
+          padding-right: 4px !important;
+          padding-top: 0 !important;
+          padding-bottom: 0 !important;
+          margin: 0 !important;
+          width: 100%;
+          background: transparent !important;
+          background-color: transparent !important;
+          background-image: none !important;
+          border: none !important;
+          box-shadow: none !important;
+          line-height: 0 !important;
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
+        }
+        
+        /* Pastikan tidak ada spacing dari pseudo-elements di mobile */
+        .top-countdown::before,
+        .top-countdown::after {
+          display: none !important;
+          content: none !important;
+          height: 0 !important;
+          line-height: 0 !important;
+        }
+        
+        .top-countdown .countdown-item {
+          background: transparent;
+          backdrop-filter: none;
+          border: none;
+          border-radius: 0;
+          padding: 8px 4px;
+          box-shadow: none;
+        }
+        
+        .top-countdown .countdown-number {
+          font-size: 28px;
+          color: #282061;
+          font-weight: 900;
+          letter-spacing: -0.5px;
+        }
+        
+        .top-countdown .countdown-label {
+          font-size: 8px;
+          font-weight: 700;
+          color: #665d6c;
+          letter-spacing: 0.2px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -96,9 +508,9 @@
       <div class="container header-inner">
         <a href="/" class="brand">
           <div class="logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
-            <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="40" height="40" style="filter: none;">
+            <img src="{{ url('/assets/SATPAM/logo-navbar.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="160" height="64" style="filter: none;">
           </div>
-          <span class="brand-name">Satpam Fun Run 5K</span>
+          <span class="brand-name"></span>
         </a>
         <button class="burger-menu" id="burgerMenu" aria-label="Toggle menu" aria-expanded="false">
           <span></span>
@@ -128,13 +540,35 @@
       </div>
     </header>
 
+    <!-- Countdown Timer - Di bawah navbar, kanan (Desktop) / pertama sebelum logo (Mobile) -->
+    <div class="countdown-wrapper">
+      <div class="top-countdown" id="topCountdown">
+        <div class="countdown-item">
+          <span class="countdown-number" id="top-days">00</span>
+          <span class="countdown-label">Days</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="top-hours">00</span>
+          <span class="countdown-label">Hours</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="top-minutes">00</span>
+          <span class="countdown-label">Minutes</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="top-seconds">00</span>
+          <span class="countdown-label">Seconds</span>
+        </div>
+      </div>
+    </div>
+
     <main>
       <section class="hero">
         <div class="container hero-inner">
           <div class="hero-copy">
             <span class="eyebrow">Satpam Fun Run 5K</span>
-            <h1>Solidarity Run for National Guardians</h1>
-            <p>Ajang lari 5K yang menghadirkan disiplin dan kebanggaan korps Satpam lewat rute aman, pengamanan penuh, dan panggung selebrasi khusus.</p>
+            <h1>Sigap Siaga Sehat Solid</h1>
+            {{-- <p>Ajang lari 5K yang menghadirkan disiplin dan kebanggaan korps Satpam lewat rute aman, pengamanan penuh, dan panggung selebrasi khusus.</p> --}}
             <div class="hero-meta">
               <div class="info-pill">
                 <span>Tanggal</span>
@@ -145,32 +579,13 @@
                 <strong>Coming Soon</strong>
               </div>
             </div>
-            <div class="hero-countdown">
-                <div class="countdown-item">
-                  <span class="countdown-number" id="days">00</span>
-                  <span class="countdown-label">Hari</span>
-                </div>
-                <div class="countdown-item">
-                  <span class="countdown-number" id="hours">00</span>
-                  <span class="countdown-label">Jam</span>
-                </div>
-                <div class="countdown-item">
-                  <span class="countdown-number" id="minutes">00</span>
-                  <span class="countdown-label">Menit</span>
-                </div>
-                <div class="countdown-item">
-                  <span class="countdown-number" id="seconds">00</span>
-                  <span class="countdown-label">Detik</span>
-                </div>
-              </div>
             <div class="hero-cta">
               <a href="{{ url('/event/register') }}" class="btn btn-cta">Daftar Sekarang</a>
               <a href="#tentang" class="btn btn-ghost">Detail Agenda</a>
             </div>
             <ul class="badges">
-              <li>Korps Satpam</li>
-              <li>5 Kilometer</li>
-              <li>Trisula Challenge</li>
+              
+              
             </ul>
           </div>
           <div class="hero-visual">
@@ -184,7 +599,7 @@
           <div class="promo-content">
             <h2 class="promo-title" style="color: #fff !important; text-shadow: 0 2px 8px rgba(0,0,0,.4) !important;">Solidaritas Satpam, Satu Garis Start!</h2>
             <p class="promo-subtitle" style="color: rgba(255,255,255,.95) !important; text-shadow: 0 1px 4px rgba(0,0,0,.3) !important;">Satpam Fun Run adalah platform apresiasi, pelatihan, dan perayaan untuk penjaga keamanan di seluruh Indonesia.</p>
-            <div class="promo-grid">
+            {{-- <div class="promo-grid">
               <div class="promo-panel" style="background: rgba(255,255,255,.15) !important; backdrop-filter: blur(10px) !important; border: 1px solid rgba(255,255,255,.2) !important;">
                 <span style="color: rgba(255,255,255,.8) !important;">Highlight Stage</span>
                 <strong style="color: #fff !important;">Upacara Penghormatan Korps & Live Band</strong>
@@ -197,17 +612,22 @@
                 <span style="color: rgba(255,255,255,.8) !important;">Community</span>
                 <strong style="color: #fff !important;">Networking Satpam Nasional dan Fun Expo</strong>
               </div>
-            </div>
+            </div> --}}
             <div class="categories-pricing">
               <div class="category-block" style="background: rgba(255,255,255,.95) !important; border: 1px solid rgba(200,177,120,.4) !important;">
                 <div class="category-distance" style="color: #eedf9d !important;">5K</div>
                 <div class="category-name" style="color: #2b2621 !important;">Korps Satpam</div>
                 <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 16px;">
                   <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: #5d5141; font-size: 14px;">Investasi Partisipasi</span>
+                    <span style="color: #5d5141; font-size: 14px;">Biaya Registrasi</span>
                     <div class="category-price" style="font-size: 24px; font-weight: 700; color: #282061 !important;">Rp 170.000</div>
                   </div>
-                  <p style="margin: 0; color: #5d5141; font-size: 14px;">Untuk anggota Korps Satpam</p>
+                  <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(165,154,130,.2); text-align: left;">
+                    <p style="margin: 0; color: #5d5141; font-size: 13px; line-height: 1.6;">
+                      <strong>Benefit :</strong> BIB, Jersey, Medali Finisher, Refreshment
+                    </p>
+                  </div>
+                  <p style="margin: 0; margin-top: 12px; color: #5d5141; font-size: 14px;">Untuk anggota Korps Satpam</p>
                 </div>
               </div>
               <div class="category-block" style="background: rgba(255,255,255,.95) !important; border: 1px solid rgba(200,177,120,.4) !important;">
@@ -215,16 +635,21 @@
                 <div class="category-name" style="color: #2b2621 !important;">Umum</div>
                 <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 16px;">
                   <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: #5d5141; font-size: 14px;">Investasi Partisipasi</span>
+                    <span style="color: #5d5141; font-size: 14px;">Biaya Registrasi</span>
                     <div class="category-price" style="font-size: 24px; font-weight: 700; color: #282061 !important;">Rp 180.000</div>
                   </div>
-                  <p style="margin: 0; color: #5d5141; font-size: 14px;">Untuk peserta umum</p>
+                  <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(165,154,130,.2); text-align: left;">
+                    <p style="margin: 0; color: #5d5141; font-size: 13px; line-height: 1.6;">
+                      <strong>Benefit :</strong> BIB, Jersey, Medali Finisher, Refreshment
+                    </p>
+                  </div>
+                  <p style="margin: 0; margin-top: 12px; color: #5d5141; font-size: 14px;">Untuk peserta umum</p>
                 </div>
               </div>
             </div>
 
             <div class="promo-cta">
-              <a href="{{ url('/event/register') }}" class="btn btn-promo">Daftar Sekarang</a>
+              <a href="{{ url('/event/register') }}" class="btn btn-promo">Amankan Slot Anda Sekarang</a>
             </div>
           </div>
         </div>
@@ -233,25 +658,9 @@
       <section id="tentang" class="section">
         <div class="container">
           <div class="story-grid">
-            <div class="story-card glass-card">
-              <span class="story-label">Misi Utama</span>
-              <h3>Merayakan Peran Satpam Indonesia</h3>
-              <p>Fun run ini menggabungkan disiplin korps Satpam dengan semangat festival kota. Setiap peserta merasakan bagaimana Satpam menjaga keamanan, sekaligus menikmati hiburan dan penghargaan khusus.</p>
-              <ul class="story-list">
-                <li>Upacara pembukaan bergaya apel Satpam</li>
-                <li>Pengawalan rute oleh regu Satpam berpengalaman</li>
-                <li>Expo perlengkapan & komunitas pengamanan</li>
-            </ul>
+            
           </div>
-            <div class="story-card light">
-              <span class="story-label">Agenda Lapangan</span>
-              <div class="story-steps">
-                <div>
-                  <strong>Coming Soon</strong>
-                  <p>Jadwal lengkap kegiatan akan diumumkan segera.</p>
-                </div>
-              </div>
-            </div>
+            
             <div class="story-highlight">
               <div class="stat-chip">
                 <span>Lokasi</span>
@@ -265,6 +674,45 @@
                 <span>Race Kit</span>
                 <strong>Coming Soon</strong>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="racekit" class="section racekit-section">
+        <div class="container">
+          <h2 class="racekit-title" style="color: #fff !important; text-align: center; margin-bottom: 48px; font-size: 42px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.4);">Race Kit</h2>
+          <div class="racekit-grid">
+            <div class="racekit-item">
+              <div class="racekit-icon-wrapper">
+                <img src="{{ url('/assets/SATPAM/icon/jersey.png') }}" alt="Jersey" class="racekit-icon">
+              </div>
+              <h3 class="racekit-item-title" style="color: #fff !important; margin-top: 16px; margin-bottom: 8px; font-size: 18px; font-weight: 700;">Jersey</h3>
+              <p class="racekit-item-desc" style="color: rgba(255,255,255,.85) !important; font-size: 13px; line-height: 1.5;">Kaos Eksklusif Untuk Peserta dengan Desain Khusus Event Ini.</p>
+            </div>
+            
+            <div class="racekit-item">
+              <div class="racekit-icon-wrapper">
+                <img src="{{ url('/assets/SATPAM/icon/no-dada.png') }}" alt="Nomor Dada" class="racekit-icon">
+              </div>
+              <h3 class="racekit-item-title" style="color: #fff !important; margin-top: 16px; margin-bottom: 8px; font-size: 18px; font-weight: 700;">BIB</h3>
+              <p class="racekit-item-desc" style="color: rgba(255,255,255,.85) !important; font-size: 13px; line-height: 1.5;">Nomor Unik Peserta Sebagai Tanda Keikutsertaan dalam Perlombaan.</p>
+            </div>
+            
+            <div class="racekit-item">
+              <div class="racekit-icon-wrapper">
+                <img src="{{ url('/assets/SATPAM/icon/totebag.png') }}" alt="Tote Bag" class="racekit-icon">
+              </div>
+              <h3 class="racekit-item-title" style="color: #fff !important; margin-top: 16px; margin-bottom: 8px; font-size: 18px; font-weight: 700;">Tote Bag</h3>
+              <p class="racekit-item-desc" style="color: rgba(255,255,255,.85) !important; font-size: 13px; line-height: 1.5;">Tas Eksklusif Untuk Menyimpan Perlengkapan Peserta.</p>
+            </div>
+            
+            <div class="racekit-item">
+              <div class="racekit-icon-wrapper">
+                <img src="{{ url('/assets/SATPAM/icon/medali.png') }}" alt="Medali Finisher" class="racekit-icon">
+              </div>
+              <h3 class="racekit-item-title" style="color: #fff !important; margin-top: 16px; margin-bottom: 8px; font-size: 18px; font-weight: 700;">Medali Finisher</h3>
+              <p class="racekit-item-desc" style="color: rgba(255,255,255,.85) !important; font-size: 13px; line-height: 1.5;">Penghargaan Khusus Bagi Peserta yang Berhasil Menyelesaikan Lomba.</p>
             </div>
           </div>
         </div>
@@ -287,10 +735,7 @@
             </div>
             <div class="route-legend" style="color: #5d5141;">
               <div style="color: #5d5141;"><span class="dot km5"></span> Rute 5K</div>
-              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(165,154,130,.3); color: #5d5141;">
-                <p style="margin: 0; color: #5d5141; font-size: 14px;"><strong style="color: #2b2621;">📍 Lokasi:</strong> Coming Soon</p>
-                <p style="margin: 5px 0 0; color: #5d5141; font-size: 14px;">Informasi lokasi akan diumumkan segera.</p>
-              </div>
+              
             </div>
           </div>
         </div>
@@ -323,7 +768,7 @@
           <div class="card" style="background: rgba(255,252,235,.9) !important; color: #2b2621 !important;">
             <h3 style="color: #2b2621 !important;">Butuh Bantuan?</h3>
             <p style="color: #5d5141 !important;">Hubungi panitia di <a href="mailto:satpamfunrun@uho.ac.id" style="color: #282061 !important; text-decoration: underline;">satpamfunrun@gmail.com</a>.</p>
-            <p style="color: #5d5141 !important;">Kami akan membalas maksimal 2x24 jam kerja.</p>
+            <p style="color: #5d5141 !important;">Kami akan membalas maksimal 1x24 jam kerja.</p>
           </div>
         </div>
       </section>
@@ -333,9 +778,8 @@
       <div class="container footer-inner">
         <div class="footer-brand">
           <div class="logo-wrapper footer-logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
-            <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run" width="28" height="28" class="footer-logo" style="filter: none;">
+            <img src="{{ url('/assets/SATPAM/logo-navbar.png') }}" alt="Satpam Fun Run" width="120" height="60" class="footer-logo" style="filter: none;">
           </div>
-          <span>Satpam Fun Run 5K</span>
         </div>
         <div class="footer-links">
           <a href="#tentang">Tentang</a>
@@ -399,10 +843,11 @@
           const distance = eventDate - now;
           
           if (distance < 0) {
-            document.getElementById('days').textContent = '00';
-            document.getElementById('hours').textContent = '00';
-            document.getElementById('minutes').textContent = '00';
-            document.getElementById('seconds').textContent = '00';
+            // Update top countdown
+            document.getElementById('top-days').textContent = '00';
+            document.getElementById('top-hours').textContent = '00';
+            document.getElementById('top-minutes').textContent = '00';
+            document.getElementById('top-seconds').textContent = '00';
             return;
           }
           
@@ -411,10 +856,11 @@
           const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((distance % (1000 * 60)) / 1000);
           
-          document.getElementById('days').textContent = String(days).padStart(2, '0');
-          document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-          document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-          document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+          // Update top countdown
+          document.getElementById('top-days').textContent = String(days).padStart(2, '0');
+          document.getElementById('top-hours').textContent = String(hours).padStart(2, '0');
+          document.getElementById('top-minutes').textContent = String(minutes).padStart(2, '0');
+          document.getElementById('top-seconds').textContent = String(seconds).padStart(2, '0');
         }
         
         updateCountdown();

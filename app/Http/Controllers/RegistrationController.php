@@ -21,7 +21,8 @@ class RegistrationController extends Controller
                 ->withErrors(['registration_closed' => 'Pendaftaran saat ini sudah ditutup.']);
         }
 
-        $validator = Validator::make($request->all(), [
+        // Build validation rules conditionally
+        $rules = [
             'categoryType' => 'required|in:satpam,umum',
             'category' => 'required|string',
             'fullName' => 'required|string|max:255',
@@ -30,7 +31,8 @@ class RegistrationController extends Controller
             'phone' => 'required|string|max:20',
             'birthDate' => 'required|date',
             'gender' => 'required|in:Laki-laki,Perempuan',
-            'occupation' => 'required|string|max:255',
+            'occupation' => 'required_if:categoryType,umum|nullable|string|max:255',
+            'ktaNumber' => 'required_if:categoryType,satpam|nullable|string|max:255',
             'idType' => 'required|string',
             'idNumber' => 'required|string|max:255',
             'address' => 'required|string',
@@ -41,11 +43,24 @@ class RegistrationController extends Controller
             'emergencyPhone' => 'required|string|max:20',
             'community' => 'nullable|string|max:255',
             'medicalNotes' => 'nullable|string',
-            'satpamCard' => 'required_if:categoryType,satpam|file|mimes:jpeg,jpg,png,pdf|max:10240', // 10MB, required only for satpam
             'consent' => 'required|accepted',
-        ]);
+        ];
+
+        // Conditionally add satpamCard validation based on categoryType
+        if ($request->categoryType === 'satpam') {
+            $rules['satpamCard'] = 'required|file|mimes:jpeg,jpg,png,pdf|max:10240'; // 10MB, required only for satpam
+        } else {
+            $rules['satpamCard'] = 'nullable|file|mimes:jpeg,jpg,png,pdf|max:10240'; // Optional for umum
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
+            Log::error('Registration validation failed', [
+                'errors' => $validator->errors()->all(),
+                'categoryType' => $request->categoryType,
+                'input' => $request->except(['satpamCard', '_token']),
+            ]);
             return back()
                 ->withErrors($validator)
                 ->withInput();
@@ -79,7 +94,8 @@ class RegistrationController extends Controller
             'phone' => $request->phone,
             'birth_date' => $request->birthDate,
             'gender' => $request->gender,
-            'occupation' => $request->occupation,
+            'occupation' => $request->categoryType === 'umum' ? $request->occupation : 'Satpam',
+            'kta_number' => $request->categoryType === 'satpam' ? $request->ktaNumber : null,
             'id_type' => $request->idType,
             'id_number' => $request->idNumber,
             'address' => $request->address,
@@ -132,5 +148,16 @@ class RegistrationController extends Controller
             ->firstOrFail();
         
         return view('archive.registration-detail', compact('registration'));
+    }
+
+    public function checkKta(Request $request)
+    {
+        $request->validate([
+            'kta_number' => 'required|string',
+        ]);
+
+        $exists = Registration::where('kta_number', $request->kta_number)->exists();
+
+        return response()->json(['exists' => $exists]);
     }
 }

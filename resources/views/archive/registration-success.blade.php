@@ -15,16 +15,64 @@
       .logo-wrapper[style*="background: transparent"]::before {
         display: none !important;
       }
+      /* Fix mobile menu z-index - ensure menu is always on top */
+      @media (max-width: 768px) {
+        /* Menu must be highest - use maximum z-index */
+        .nav {
+          z-index: 2147483647 !important; /* Maximum z-index value */
+          position: fixed !important;
+        }
+        .nav-overlay {
+          z-index: 2147483646 !important;
+          position: fixed !important;
+        }
+        .burger-menu {
+          z-index: 2147483647 !important;
+          position: relative !important;
+        }
+        .site-header {
+          z-index: 2147483645 !important;
+          position: relative !important;
+        }
+        /* Force ALL content below menu - no exceptions */
+        body > main,
+        body > .section,
+        body > .section.alt,
+        main .section,
+        main .section.alt,
+        main .container,
+        .section .container,
+        .section .form-panel,
+        .form-panel,
+        .glass-card,
+        .card,
+        .info-pill,
+        .hero,
+        .hero-inner,
+        .hero-copy,
+        .hero-visual {
+          position: relative !important;
+          z-index: 1 !important;
+        }
+        /* Prevent any stacking context from interfering */
+        body {
+          position: relative;
+        }
+        main {
+          isolation: isolate;
+          z-index: 1 !important;
+        }
+      }
     </style>
   </head>
   <body>
-    <header class="site-header sub">
+    <header class="site-header">
       <div class="container header-inner">
         <a href="/" class="brand">
           <div class="logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
-            <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="40" height="40" style="filter: none;">
+            <img src="{{ url('/assets/SATPAM/logo-navbar.png') }}" alt="Satpam Fun Run Logo" class="brand-logo" width="160" height="64" style="filter: none;">
           </div>
-          <span class="brand-name">Satpam Fun Run 5K</span>
+          <span class="brand-name"></span>
         </a>
         <button class="burger-menu" id="burgerMenu" aria-label="Toggle menu" aria-expanded="false">
           <span></span>
@@ -40,12 +88,15 @@
             </svg>
           </button>
           <div class="nav-links">
-          <a href="/" onclick="closeMobileMenu()">Beranda</a>
-            <a href="{{ route('registration.check') }}" onclick="closeMobileMenu()">Cek Status</a>
+          <a href="/#tentang" onclick="closeMobileMenu()">Tentang</a>
+          <a href="/#rute" onclick="closeMobileMenu()">Rute</a>
+          <a href="/#jadwal" onclick="closeMobileMenu()">Jadwal</a>
+          <a href="/#faq" onclick="closeMobileMenu()">FAQ</a>
           </div>
           <div class="nav-cta">
             <span class="nav-badge">Edisi 2025</span>
-            <a href="{{ url('/event/register') }}" class="btn btn-cta btn-sm" onclick="closeMobileMenu()">Daftar</a>
+            <a href="{{ route('registration.check') }}" class="btn btn-ghost btn-sm" onclick="closeMobileMenu()">Cek Status</a>
+            <a href="{{ url('/event/register') }}" class="btn btn-cta btn-sm" onclick="closeMobileMenu()" style="background: linear-gradient(135deg, #eedf9d, #d4c48a) !important; color: #232324 !important; border: none !important; font-weight: 800 !important;">Daftar</a>
           </div>
         </nav>
       </div>
@@ -61,10 +112,10 @@
               </div>
               <h1 style="margin-bottom: 16px; color: #2b2621; font-size: 32px;">Pendaftaran Berhasil! 🎉</h1>
               <p style="font-size: 18px; margin-bottom: 8px; color: #5d5141;">
-                Terima kasih <strong style="color: #2b2621;">{{ $registration->first_name }}</strong>!
+                Terima kasih <strong style="color: #2b2621; word-break: break-word;">{{ $registration->first_name }}</strong>!
               </p>
-              <p style="font-size: 16px; margin-bottom: 32px; color: #5d5141;">
-                Email konfirmasi dengan informasi pembayaran telah dikirim ke <strong style="color: #282061;">{{ $registration->email }}</strong>
+              <p style="font-size: 16px; margin-bottom: 32px; color: #5d5141; word-break: break-word; overflow-wrap: break-word;">
+                Email konfirmasi dengan informasi pembayaran telah dikirim ke <strong style="color: #282061; word-break: break-all; overflow-wrap: break-word;">{{ $registration->email }}</strong>
               </p>
             </div>
 
@@ -72,27 +123,31 @@
             <div style="background: rgba(255,255,255,.95); border: 1px solid rgba(200,177,120,.4); border-radius: 12px; padding: 24px; margin-bottom: 24px; text-align: left;">
               <h3 style="margin-bottom: 20px; color: #2b2621; font-size: 20px; text-align: center;">📋 Informasi Pendaftaran</h3>
               <div style="display: grid; gap: 16px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(165,154,130,.2);">
-                  <span style="color: #5d5141; font-weight: 500;">Nama:</span>
-                  <strong style="color: #2b2621;">{{ $registration->full_name }}</strong>
+                <div style="padding-bottom: 12px; border-bottom: 1px solid rgba(165,154,130,.2);">
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start;">
+                    <span style="color: #5d5141; font-weight: 500; flex-shrink: 0; min-width: 100px;">Nama:</span>
+                    <strong style="color: #2b2621; word-break: break-word; overflow-wrap: break-word; flex: 1; min-width: 0;">{{ $registration->full_name }}</strong>
+                  </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(165,154,130,.2);">
-                  <span style="color: #5d5141; font-weight: 500;">Email:</span>
-                  <strong style="color: #2b2621;">{{ $registration->email }}</strong>
+                <div style="padding-bottom: 12px; border-bottom: 1px solid rgba(165,154,130,.2);">
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start;">
+                    <span style="color: #5d5141; font-weight: 500; flex-shrink: 0; min-width: 100px;">Email:</span>
+                    <strong style="color: #2b2621; word-break: break-all; overflow-wrap: break-word; flex: 1; min-width: 0; font-size: 14px;">{{ $registration->email }}</strong>
+                  </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(165,154,130,.2);">
-                  <span style="color: #5d5141; font-weight: 500;">Kategori:</span>
-                  <strong style="color: #282061;">{{ $registration->category }}</strong>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid rgba(165,154,130,.2);">
+                  <span style="color: #5d5141; font-weight: 500; flex-shrink: 0;">Kategori:</span>
+                  <strong style="color: #282061; word-break: break-word; text-align: right;">{{ $registration->category }}</strong>
                 </div>
                 @if($registration->unique_price_code)
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(165,154,130,.2);">
-                  <span style="color: #5d5141; font-weight: 500;">Total Pembayaran:</span>
-                  <strong style="color: #282061; font-size: 18px;">Rp {{ number_format($registration->unique_price_code, 0, ',', '.') }}</strong>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid rgba(165,154,130,.2);">
+                  <span style="color: #5d5141; font-weight: 500; flex-shrink: 0;">Total Pembayaran:</span>
+                  <strong style="color: #282061; font-size: 18px; word-break: break-word; text-align: right;">Rp {{ number_format($registration->unique_price_code, 0, ',', '.') }}</strong>
                 </div>
                 @endif
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="color: #5d5141; font-weight: 500;">Status:</span>
-                  <span style="background: rgba(243,200,124,.2); color: #8b6f2e; padding: 6px 16px; border-radius: 8px; font-size: 14px; font-weight: 600;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                  <span style="color: #5d5141; font-weight: 500; flex-shrink: 0;">Status:</span>
+                  <span style="background: rgba(243,200,124,.2); color: #8b6f2e; padding: 6px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; white-space: nowrap;">
                     Menunggu Pembayaran
                   </span>
                 </div>
@@ -129,7 +184,7 @@
             @endif
 
             <!-- Informasi Pembayaran -->
-            <div style="background: linear-gradient(135deg, rgba(238,223,157,.3), rgba(212,196,138,.2)); border: 2px solid rgba(238,223,157,.5); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+            {{-- <div style="background: linear-gradient(135deg, rgba(238,223,157,.3), rgba(212,196,138,.2)); border: 2px solid rgba(238,223,157,.5); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
               <p style="margin: 0 0 16px; color: #2b2621; font-size: 18px; font-weight: 700; text-align: center;">
                 💳 Langkah Pembayaran
               </p>
@@ -151,18 +206,18 @@
 
             <!-- Tombol WhatsApp -->
             <div style="text-align: center; margin-bottom: 32px;">
-              <a href="https://wa.me/6285751295471?text=Halo%20Admin%2C%20saya%20{{ urlencode($registration->full_name) }}%20telah%20melakukan%20pendaftaran%20Satpam%20Fun%20Run%205K%20dengan%20kategori%20{{ urlencode($registration->category) }}.%20Total%20pembayaran%20Rp%20{{ $registration->unique_price_code ? number_format($registration->unique_price_code, 0, ',', '.') : '-' }}.%20Saya%20ingin%20mengirimkan%20bukti%20transfer." 
+              <a href="https://wa.me/6282342919490?text=Halo%20Admin%2C%20saya%20{{ urlencode($registration->full_name) }}%20telah%20melakukan%20pendaftaran%20Satpam%20Fun%20Run%205K%20dengan%20kategori%20{{ urlencode($registration->category) }}.%20Total%20pembayaran%20Rp%20{{ $registration->unique_price_code ? number_format($registration->unique_price_code, 0, ',', '.') : '-' }}.%20Saya%20ingin%20mengirimkan%20bukti%20transfer." 
                  target="_blank"
                  style="display: inline-block; background: #25D366; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); transition: transform 0.2s;">
                 📱 Hubungi Admin via WhatsApp
               </a>
-            </div>
+            </div> --}}
 
             <!-- Info Email -->
             <div style="background: rgba(238,223,157,.15); border: 1px solid rgba(238,223,157,.3); border-radius: 12px; padding: 20px; margin-bottom: 32px;">
-              <p style="margin: 0; color: #2b2621; font-size: 15px; line-height: 1.6; text-align: center;">
+              <p style="margin: 0; color: #2b2621; font-size: 15px; line-height: 1.6; text-align: center; word-break: break-word; overflow-wrap: break-word;">
                 <strong style="color: #282061;">📧 Email Konfirmasi</strong><br>
-                <span style="color: #5d5141;">Email dengan informasi pembayaran lengkap telah dikirim ke <strong>{{ $registration->email }}</strong>. 
+                <span style="color: #5d5141;">Email dengan informasi pembayaran lengkap telah dikirim ke <strong style="word-break: break-all; overflow-wrap: break-word;">{{ $registration->email }}</strong>. 
                 Silakan cek inbox atau folder spam Anda.</span>
               </p>
             </div>
@@ -181,12 +236,14 @@
       <div class="container footer-inner">
         <div class="footer-brand">
           <div class="logo-wrapper footer-logo-wrapper" style="background: transparent; padding: 0; border: none; animation: none;">
-            <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Fun Run" width="28" height="28" class="footer-logo" style="filter: none;">
+            <img src="{{ url('/assets/SATPAM/logo-navbar.png') }}" alt="Satpam Fun Run" width="120" height="60" class="footer-logo" style="filter: none;">
           </div>
-          <span>Satpam Fun Run 5K</span>
         </div>
         <div class="footer-links">
-          <a href="/">Beranda</a>
+          <a href="/#tentang">Tentang</a>
+          <a href="/#rute">Rute</a>
+          <a href="/#jadwal">Jadwal</a>
+          <a href="/#faq">FAQ</a>
           <a href="{{ url('/event/register') }}" class="btn btn-sm">Daftar</a>
         </div>
       </div>

@@ -55,7 +55,7 @@
                                             <h2 class="mb-1 text-white">Selamat Datang, {{ Auth::check() ? Auth::user()->name : 'Admin' }}!</h2>
                                             <p class="text-white-50 mb-0">Kelola seluruh data Satpam Fun Run 5K langsung dari dashboard ini.</p>
                                             <div class="mt-2">
-                                                <span class="badge bg-white text-primary text-uppercase" style="color:#282061 !important;">14 Desember 2025</span>
+                                                <span class="badge bg-white text-primary text-uppercase" style="color:#282061 !important;">4 Januari 2026</span>
                                                 <span class="badge bg-white text-primary ms-2 text-uppercase" style="color:#282061 !important;">Kategori: Satpam & Umum</span>
                                             </div>
                                         </div>

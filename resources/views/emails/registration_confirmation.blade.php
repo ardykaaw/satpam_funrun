@@ -45,7 +45,7 @@
       </div>
 
       <div style="text-align:center; margin:32px 0;">
-        <a href="https://wa.me/6285751295471?text=Halo%20Admin%2C%20saya%20{{ urlencode($registration->full_name) }}%20telah%20melakukan%20pendaftaran%20Satpam%20Fun%20Run%205K%20dengan%20kategori%20{{ urlencode($registration->category) }}.%20Total%20pembayaran%20Rp%20{{ number_format($registration->unique_price_code, 0, ',', '.') }}.%20Saya%20ingin%20mengirimkan%20bukti%20transfer." 
+        <a href="https://wa.me/6282342919490?text=Halo%20Admin%2C%20saya%20{{ urlencode($registration->full_name) }}%20telah%20melakukan%20pendaftaran%20Satpam%20Fun%20Run%205K%20dengan%20kategori%20{{ urlencode($registration->category) }}.%20Total%20pembayaran%20Rp%20{{ number_format($registration->unique_price_code, 0, ',', '.') }}.%20Saya%20ingin%20mengirimkan%20bukti%20transfer." 
            style="display:inline-block; background:#25D366; color:#ffffff; text-decoration:none; padding:16px 32px; border-radius:12px; font-weight:700; font-size:16px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);">
           📱 Hubungi Admin via WhatsApp
         </a>

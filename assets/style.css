@@ -18,8 +18,10 @@
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
+
 body {
   margin: 0;
+  padding: 0;
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
   color: var(--text);
   line-height: 1.6;
@@ -34,15 +36,20 @@ body {
   background-attachment: fixed;
 }
 
-.container { width: min(1120px, 92%); margin: 0 auto; }
+.container { width: min(1120px, 92%); margin: 0 auto; padding-left: 4%; padding-right: 4%; }
 .narrow { width: min(760px, 92%); }
 .center { text-align: center; }
 
 .site-header {
-  position: sticky; top: 0; z-index: 100;
+  position: sticky; 
+  top: 0; 
+  z-index: 100;
   background: rgba(20,20,23,.65);
   backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(238,223,157,.08);
+  margin: 0;
+  padding: 0;
+  overflow: visible;
 }
 
 /* CRITICAL: Mobile menu must always be on top - highest priority */
@@ -80,6 +87,43 @@ body {
   justify-content: space-between; 
   padding: 14px 0; 
   position: relative;
+  margin: 0;
+  overflow: visible;
+}
+
+/* Desktop: Pastikan menu navbar lebih ke kanan */
+@media (min-width: 769px) {
+  .header-inner {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .brand {
+    flex: 0 0 auto !important;
+    margin-right: auto !important;
+    order: 1;
+    max-width: 200px;
+  }
+  
+  .nav {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    order: 2;
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .burger-menu {
+    display: none !important;
+  }
+  
+  .nav-overlay {
+    display: none !important;
+  }
 }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 700; }
 .brand-name { color: #fff; }
@@ -305,6 +349,9 @@ body {
   display: flex;
   align-items: center;
   background: linear-gradient(180deg, rgba(102,93,108,.6), rgba(40,32,97,.7), rgba(35,35,36,.8));
+  margin: 0;
+  margin-top: 0;
+  overflow: visible;
 }
 .hero-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 48px; }
 .hero-copy { flex: 1; min-width: 280px; max-width: 560px; color: #fdf7dd; }
@@ -496,6 +543,191 @@ body {
   inset: 0;
   background: linear-gradient(135deg, rgba(26,13,46,.75), rgba(45,27,78,.65), rgba(58,15,92,.7));
   z-index: 0;
+}
+
+/* Racekit Section */
+.racekit-section {
+  position: relative;
+  background: linear-gradient(135deg, rgba(40,32,97,.95), rgba(35,35,36,.98), rgba(40,32,97,.95));
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+  padding: 80px 0;
+  overflow: hidden;
+}
+
+.racekit-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(102,93,108,.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(238,223,157,.08) 0%, transparent 50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.racekit-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+.racekit-title {
+  text-align: center;
+  margin-bottom: 48px;
+  font-size: 42px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+
+.racekit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.racekit-item {
+  text-align: center;
+  padding: 24px 16px;
+  background: rgba(255,255,255,.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(238,223,157,.15);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.racekit-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(238,223,157,.05), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.racekit-item:hover {
+  transform: translateY(-8px);
+  border-color: rgba(238,223,157,.3);
+  box-shadow: 0 12px 32px rgba(0,0,0,.3), 0 0 0 1px rgba(238,223,157,.2);
+}
+
+.racekit-item:hover::before {
+  opacity: 1;
+}
+
+.racekit-icon-wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  margin: 0 auto;
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  border: 2px solid rgba(238,223,157,.2);
+  transition: all 0.3s ease;
+}
+
+.racekit-item:hover .racekit-icon-wrapper {
+  background: rgba(238,223,157,.15);
+  border-color: rgba(238,223,157,.4);
+  transform: scale(1.1);
+}
+
+.racekit-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.3));
+  transition: all 0.3s ease;
+}
+
+.racekit-item:hover .racekit-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 6px 12px rgba(238,223,157,.4));
+}
+
+.racekit-item-title {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.racekit-item-desc {
+  position: relative;
+  z-index: 1;
+  color: rgba(255,255,255,.85);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .racekit-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .racekit-section {
+    padding: 60px 0;
+  }
+  
+  .racekit-title {
+    font-size: 32px;
+    margin-bottom: 32px;
+  }
+  
+  .racekit-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 16px;
+  }
+  
+  .racekit-item {
+    padding: 24px 20px;
+  }
+  
+  .racekit-icon-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .racekit-icon {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .racekit-item-title {
+    font-size: 20px;
+    margin-top: 20px;
+  }
+  
+  .racekit-item-desc {
+    font-size: 14px;
+  }
 }
 
 .event-promo .container {
@@ -835,8 +1067,8 @@ input[type="date"] {
   }
   
   .brand-logo {
-    width: 32px;
-    height: 32px;
+    width: 42px;
+    height: 42px;
   }
   
   /* Mobile Navigation - Override desktop styles */
