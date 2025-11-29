@@ -88,20 +88,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         $pendingPayments = $registrations->where('payment_status', 'pending')->count();
         $todayRegistrations = $registrations->where('created_at', '>=', today())->count();
         
-        // Calculate total revenue based on actual category prices
-        // Satpam: 170.000, Umum: 180.000
-        // This will automatically adjust if prices are updated in generateUniquePriceCode()
+        // Calculate total revenue by summing all unique_price_code directly
+        // unique_price_code is the actual price paid by each registrant (e.g., 170401, 180402)
+        // This automatically follows the actual price used in registration
         $totalRevenue = $registrations
             ->where('payment_status', 'verified')
-            ->filter(function ($registration) {
-                // Only count registrations with valid category_type
-                return in_array($registration->category_type, ['satpam', 'umum']);
-            })
-            ->sum(function ($registration) {
-                // Use category_type to determine price
-                // This ensures it always uses current price logic from generateUniquePriceCode()
-                return $registration->category_type === 'satpam' ? 170000 : 180000;
-            });
+            ->whereNotNull('unique_price_code')
+            ->sum('unique_price_code');
         
         return view('welcome', compact(
             'totalRegistrations',
