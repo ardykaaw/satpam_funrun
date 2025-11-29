@@ -254,10 +254,7 @@
                   <span>Lokasi</span>
                   <strong>Coming Soon</strong>
                 </div>
-                <div class="info-pill light">
-                  <span>Investasi</span>
-                  <strong>Coming Soon</strong>
-            </div>
+                
               </div>
               <div class="hero-visual" style="margin-top: 28px;">
                 <img src="{{ url('/assets/SATPAM/Logo.png') }}" alt="Satpam Crest" style="width: clamp(220px, 35vw, 320px); filter: drop-shadow(0 25px 40px rgba(0,0,0,.35));">
