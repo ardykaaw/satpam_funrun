@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Registration extends Model
 {
@@ -107,56 +108,75 @@ class Registration extends Model
     }
 
     /**
-     * Generate unique price code with global counter starting from 401
+     * Generate unique price code with truly global counter starting from 401
      * Counter is shared between both categories (satpam and umum)
      * Counter continues regardless of category - truly global
-     * Example: 180.401 (umum), 170.402 (satpam), 180.403 (umum), 170.404 (satpam)
+     * Example: 
+     *   - Pendaftar 1 (satpam): 170.401
+     *   - Pendaftar 2 (umum): 180.402 (lanjut dari 401, bukan 180.401)
+     *   - Pendaftar 3 (satpam): 170.403 (lanjut dari 402)
+     *   - Pendaftar 4 (umum): 180.404 (lanjut dari 403)
+     * 
+     * Uses database lock to prevent race conditions in concurrent requests
      */
     public static function generateUniquePriceCode(string $categoryType): int
     {
         $basePrice = $categoryType === 'satpam' ? 170000 : 180000;
         
-        // Find the last registration with unique_price_code (global counter - regardless of category)
-        $lastRegistration = self::whereNotNull('unique_price_code')
-            ->orderByDesc('unique_price_code')
-            ->first();
+        // Use database transaction with lock to prevent race conditions
+        return DB::transaction(function () use ($basePrice, $categoryType) {
+            // Find the registration with the highest GLOBAL COUNTER (not highest unique_price_code)
+            // We need to extract counter from all registrations and find the max counter
+            $allRegistrations = self::whereNotNull('unique_price_code')
+                ->lockForUpdate() // Pessimistic locking - prevents other transactions from reading
+                ->get();
 
-        $nextCounter = 401; // Default start from 401
-        
-        if ($lastRegistration && $lastRegistration->unique_price_code) {
-            // Extract the counter from the last price code (global counter)
-            $lastCode = $lastRegistration->unique_price_code;
+            $maxCounter = 400; // Start from 400, so next will be 401
             
-            // Determine which base price was used and extract counter
-            if ($lastCode >= 180000) {
-                // Last was umum (180xxx)
-                $lastCounter = $lastCode - 180000;
-            } else {
-                // Last was satpam (170xxx)
-                $lastCounter = $lastCode - 170000;
+            // Find the maximum counter across all registrations (global counter)
+            foreach ($allRegistrations as $reg) {
+                $code = $reg->unique_price_code;
+                $counter = 0;
+                
+                // Extract counter from price code
+                if ($code >= 180000) {
+                    // Umum (180xxx)
+                    $counter = $code - 180000;
+                } else {
+                    // Satpam (170xxx)
+                    $counter = $code - 170000;
+                }
+                
+                // Track the maximum counter found (this is the global counter)
+                if ($counter > $maxCounter) {
+                    $maxCounter = $counter;
+                }
             }
-            
-            // Increment counter for next registration (global counter continues)
-            $nextCounter = $lastCounter + 1;
-        }
 
-        // Ensure counter is at least 401
-        if ($nextCounter < 401) {
-            $nextCounter = 401;
-        }
+            // Increment for next registration (GLOBAL - continues regardless of category)
+            $nextCounter = $maxCounter + 1;
 
-        // Calculate unique price: base price + counter
-        $uniquePrice = $basePrice + $nextCounter;
+            // Ensure counter is at least 401
+            if ($nextCounter < 401) {
+                $nextCounter = 401;
+            }
 
-        // Double check uniqueness (safety check)
-        $counter = 0;
-        while (self::where('unique_price_code', $uniquePrice)->exists() && $counter < 100) {
-            $nextCounter++;
+            // Calculate unique price: base price + global counter
+            // The counter is global, but base price depends on category
             $uniquePrice = $basePrice + $nextCounter;
-            $counter++;
-        }
 
-        return $uniquePrice;
+            // Double check uniqueness with lock (safety check)
+            $counter = 0;
+            while (self::where('unique_price_code', $uniquePrice)
+                    ->lockForUpdate()
+                    ->exists() && $counter < 100) {
+                $nextCounter++;
+                $uniquePrice = $basePrice + $nextCounter;
+                $counter++;
+            }
+
+            return $uniquePrice;
+        });
     }
 
     /**
