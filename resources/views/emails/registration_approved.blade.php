@@ -8,119 +8,57 @@
   <body style="font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif; background:#f5f5f5; margin:0; padding:0;">
     <div style="max-width:600px; margin:0 auto; background:#ffffff; padding:0;">
       
-      <!-- Header Message -->
-      <div style="padding:24px 20px; text-align:center; border-bottom:1px solid #e0e0e0;">
-        <p style="margin:0; color:#333; font-size:15px; line-height:1.6;">
-          Email ini merupakan konfirmasi bahwa Anda telah terdaftar untuk <strong>Satpam Fun Run 5K</strong>
+      <!-- Logo Header - Same as confirmation email -->
+      <div style="text-align:center; padding:24px 20px; border-bottom:1px solid #e0e0e0;">
+        @php
+          // Try multiple paths to find Logo file - same as confirmation email
+          $logoPath = null;
+          $possiblePaths = [
+            public_path('assets/SATPAM/Logo.png'),
+            base_path('assets/SATPAM/Logo.png'),
+            storage_path('app/public/assets/SATPAM/Logo.png'),
+          ];
+          
+          foreach ($possiblePaths as $path) {
+            if (file_exists($path)) {
+              $logoPath = $path;
+              break;
+            }
+          }
+        @endphp
+        @if($logoPath && file_exists($logoPath))
+          <img src="{{ $message->embed($logoPath) }}" alt="Satpam Fun Run" style="height:64px; width:auto;">
+        @else
+          <div style="height:64px; display:flex; align-items:center; justify-content:center; color:#282061; font-weight:700; font-size:20px;">Satpam Fun Run</div>
+        @endif
+        <p style="margin:16px 0 0; color:#333; font-size:15px; line-height:1.6;">
+          Email ini merupakan konfirmasi bahwa pendaftaran Anda telah <strong>disetujui</strong> untuk <strong>Satpam Fun Run 5K</strong>
         </p>
       </div>
 
       <!-- QR Code - Paling Atas -->
       @php
-        $hasQrCode = false;
-        $qrCodeSrc = null;
-        
-        // Priority 1: CID embedding (MOST RELIABLE for email clients - Gmail supports this)
-        if (!empty($qrCodeCid)) {
-          $hasQrCode = true;
-          $qrCodeSrc = $qrCodeCid;
-        }
-        
-        // Priority 2: Base64 (fallback if CID not available)
-        if (!$hasQrCode && !empty($qrCodeBase64)) {
-          $isValidBase64 = (substr($qrCodeBase64, 0, 22) === 'data:image/png;base64,') || (strpos($qrCodeBase64, 'data:image/png;base64,') === 0);
-          if ($isValidBase64 && strlen($qrCodeBase64) > 500) {
-            $hasQrCode = true;
-            $qrCodeSrc = $qrCodeBase64;
-          }
-        }
-        
-        // Priority 3: Generate base64 on-the-fly if we have registration number but no base64
-        if (!$hasQrCode && !empty($registration->registration_number)) {
-          try {
-            $generatedBase64 = \App\Services\BarcodeService::generateBarcodeBase64($registration->registration_number);
-            if (!empty($generatedBase64) && substr($generatedBase64, 0, 22) === 'data:image/png;base64,' && strlen($generatedBase64) > 500) {
-              $hasQrCode = true;
-              $qrCodeSrc = $generatedBase64;
-            }
-          } catch (\Exception $e) {
-            // Silent fail
-          }
-        }
-        
-        // Priority 4: Public route URL (fallback)
-        if (!$hasQrCode && !empty($registration->registration_number)) {
-          try {
-            $encodedRegNumber = rawurlencode($registration->registration_number);
-            $publicUrl = url('/registration/barcode/' . $encodedRegNumber);
-            $publicUrl = str_replace('+', '%20', $publicUrl);
-            
-            if (!empty($publicUrl) && strlen($publicUrl) > 20) {
-              $hasQrCode = true;
-              $qrCodeSrc = $publicUrl;
-            }
-          } catch (\Exception $e) {
-            // Silent fail
-          }
-        }
-        
-        // Priority 5: Direct storage URL (last resort)
-        if (!$hasQrCode && !empty($qrCodePath)) {
-          try {
-            $storagePath = str_replace('storage/', '', $qrCodePath);
-            $directUrl = \Illuminate\Support\Facades\Storage::disk('public')->url($storagePath);
-            
-            if (!preg_match('/^https?:\/\//', $directUrl)) {
-              $baseUrl = config('app.url');
-              $directUrl = rtrim($baseUrl, '/') . '/' . ltrim($directUrl, '/');
-            }
-            
-            $directUrl = str_replace(' ', '%20', $directUrl);
-            
-            if (!empty($directUrl) && strlen($directUrl) > 20) {
-              $hasQrCode = true;
-              $qrCodeSrc = $directUrl;
-            }
-          } catch (\Exception $e) {
-            // Silent fail
+        // Use $message->embed() - EXACT same method as logo in confirmation email (which works)
+        // This is the most reliable method for email clients
+        $barcodeFilePath = null;
+        if ($registration->barcode) {
+          $storagePath = str_replace('storage/', '', $registration->barcode);
+          $fullPath = storage_path('app/public/' . $storagePath);
+          if (file_exists($fullPath) && is_readable($fullPath)) {
+            $barcodeFilePath = $fullPath;
           }
         }
       @endphp
       
-      @if($hasQrCode && $qrCodeSrc)
+      @if($barcodeFilePath && file_exists($barcodeFilePath))
       <div style="text-align:center; padding:32px 20px; background:#ffffff;">
         <p style="margin:0 0 16px; color:#333; font-size:14px; font-weight:600;">QR Code Pendaftaran Anda:</p>
-        {{-- Try to use $message->embed() if we have file path --}}
-        @php
-          $barcodeFilePath = null;
-          if (!empty($qrCodePath)) {
-            // Convert storage path to full path
-            $storagePath = str_replace('storage/', '', $qrCodePath);
-            $fullPath = storage_path('app/public/' . $storagePath);
-            if (file_exists($fullPath)) {
-              $barcodeFilePath = $fullPath;
-            }
-          }
-        @endphp
-        @if($barcodeFilePath && file_exists($barcodeFilePath))
-          {{-- Use $message->embed() for file path - most reliable --}}
-          <img src="{{ $message->embed($barcodeFilePath) }}" alt="QR Code {{ $registration->registration_number ?? 'N/A' }}" style="max-width:280px; width:100%; height:auto; display:block; margin:0 auto; border:2px solid #282061; border-radius:8px; padding:8px; background:#f9f9f9;" />
-        @elseif(strpos($qrCodeSrc, 'data:image') === 0)
-          {{-- Base64 image - fallback --}}
-          <img src="{!! $qrCodeSrc !!}" alt="QR Code {{ $registration->registration_number ?? 'N/A' }}" style="max-width:280px; width:100%; height:auto; display:block; margin:0 auto; border:2px solid #282061; border-radius:8px; padding:8px; background:#f9f9f9;" />
-          <p style="margin:8px 0 0; color:#ff9800; font-size:11px; font-style:italic;">Catatan: Jika QR Code tidak tampil, silakan cek di halaman status pendaftaran.</p>
-        @else
-          {{-- CID or URL image --}}
-          <img src="{!! $qrCodeSrc !!}" alt="QR Code {{ $registration->registration_number ?? 'N/A' }}" style="max-width:280px; width:100%; height:auto; display:block; margin:0 auto; border:2px solid #282061; border-radius:8px; padding:8px; background:#f9f9f9;" />
-        @endif
+        {{-- Use $message->embed() - EXACT same as logo in confirmation email which works --}}
+        <img src="{{ $message->embed($barcodeFilePath) }}" alt="QR Code {{ $registration->registration_number ?? 'N/A' }}" style="max-width:280px; width:100%; height:auto; display:block; margin:0 auto; border:2px solid #282061; border-radius:8px; padding:8px; background:#f9f9f9;" />
         <p style="margin:16px 0 0; color:#666; font-size:12px; line-height:1.5;">Tunjukkan QR Code ini saat pengambilan race pack. Informasi detail akan diumumkan kemudian.</p>
         <p style="margin:8px 0 0; color:#666; font-size:11px;">
           <a href="{{ route('registration.check') }}?registration_number={{ urlencode($registration->registration_number) }}" style="color:#282061; text-decoration:underline;">Atau cek QR Code di halaman status pendaftaran</a>
         </p>
-      </div>
-      @else
-      <div style="text-align:center; padding:32px 20px; background:#fff3cd; border:1px solid #ffc107;">
-        <p style="margin:0; color:#856404; font-size:14px;">QR Code sedang diproses. Silakan cek status pendaftaran Anda di bawah.</p>
       </div>
       @endif
 

@@ -133,15 +133,39 @@ class RegistrationController extends Controller
             'barcode' => $registration->barcode,
         ]);
 
-        // Send Email notification (automatic)
+        // Send Email notification (automatic) - Use EXACT same pattern as RegistrationController
+        // IMPORTANT: Use exact same pattern as confirmation email which works
         try {
             if (!empty($registration->email)) {
+                // Ensure registration is fresh with all data
+                $registration->refresh();
+                
+                Log::info('Sending approval email', [
+                    'registration_id' => $registration->id,
+                    'email' => $registration->email,
+                    'has_barcode' => !empty($registration->barcode),
+                    'registration_number' => $registration->registration_number,
+                ]);
+                
+                // Use EXACT same pattern as registration confirmation email (which works)
+                // Simple, direct send - no extra logic
                 Mail::to($registration->email)->send(new RegistrationApprovedMail($registration));
+                
+                Log::info('Approval email sent successfully', [
+                    'registration_id' => $registration->id,
+                    'email' => $registration->email,
+                ]);
+            } else {
+                Log::warning('Cannot send approval email - email is empty', [
+                    'registration_id' => $registration->id,
+                ]);
             }
         } catch (\Throwable $e) {
             Log::error('Failed to send approval email', [
                 'registration_id' => $registration->id,
+                'email' => $registration->email ?? 'N/A',
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
         }
 
@@ -191,3 +215,4 @@ class RegistrationController extends Controller
         return $whatsappService->sendMessage($registration->phone, $message);
     }
 }
+
