@@ -142,11 +142,11 @@ class Registration extends Model
                 if ($code >= 180000) {
                     // Umum (180xxx)
                     $counter = $code - 180000;
-                } else {
+            } else {
                     // Satpam (170xxx)
                     $counter = $code - 170000;
-                }
-                
+            }
+            
                 // Track the maximum counter found (this is the global counter)
                 if ($counter > $maxCounter) {
                     $maxCounter = $counter;
@@ -156,26 +156,26 @@ class Registration extends Model
             // Increment for next registration (GLOBAL - continues regardless of category)
             $nextCounter = $maxCounter + 1;
 
-            // Ensure counter is at least 401
-            if ($nextCounter < 401) {
-                $nextCounter = 401;
-            }
+        // Ensure counter is at least 401
+        if ($nextCounter < 401) {
+            $nextCounter = 401;
+        }
 
             // Calculate unique price: base price + global counter
             // The counter is global, but base price depends on category
-            $uniquePrice = $basePrice + $nextCounter;
+        $uniquePrice = $basePrice + $nextCounter;
 
             // Double check uniqueness with lock (safety check)
-            $counter = 0;
+        $counter = 0;
             while (self::where('unique_price_code', $uniquePrice)
                     ->lockForUpdate()
                     ->exists() && $counter < 100) {
-                $nextCounter++;
-                $uniquePrice = $basePrice + $nextCounter;
-                $counter++;
-            }
+            $nextCounter++;
+            $uniquePrice = $basePrice + $nextCounter;
+            $counter++;
+        }
 
-            return $uniquePrice;
+        return $uniquePrice;
         });
     }
 

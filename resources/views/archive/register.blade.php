@@ -230,7 +230,6 @@
           </div>
           <div class="nav-cta">
             <span class="nav-badge">Edisi 2025</span>
-            <a href="{{ route('registration.check') }}" class="btn btn-ghost btn-sm" onclick="closeMobileMenu()">Cek Status</a>
             <a href="{{ url('/event/register') }}" class="btn btn-cta btn-sm" onclick="closeMobileMenu()" style="background: linear-gradient(135deg, #eedf9d, #d4c48a) !important; color: #232324 !important; border: none !important; font-weight: 800 !important;">Daftar</a>
           </div>
         </nav>

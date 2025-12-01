@@ -74,7 +74,7 @@ class RegistrationController extends Controller
             $file = $request->file('satpamCard');
             $satpamCardPath = $file->store('satpam-cards', 'public');
         }
-        
+
         // Split full name into first and last name
         $fullName = trim($request->fullName);
         $nameParts = explode(' ', $fullName, 2);
@@ -86,35 +86,35 @@ class RegistrationController extends Controller
         $registration = DB::transaction(function () use ($request, $satpamCardPath, $firstName, $lastName) {
             // Generate unique price code inside transaction
             $uniquePriceCode = Registration::generateUniquePriceCode($request->categoryType);
-            
-            // Create registration
+
+        // Create registration
             return Registration::create([
-                'category' => $request->category,
-                'category_type' => $request->categoryType,
-                'unique_price_code' => $uniquePriceCode,
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'email' => $request->email,
-                'bib_name' => $request->bibName,
-                'phone' => $request->phone,
-                'birth_date' => $request->birthDate,
-                'gender' => $request->gender,
-                'occupation' => $request->categoryType === 'umum' ? $request->occupation : 'Satpam',
-                'kta_number' => $request->categoryType === 'satpam' ? $request->ktaNumber : null,
-                'id_type' => $request->idType,
-                'id_number' => $request->idNumber,
-                'address' => $request->address,
-                'city' => $request->city,
-                'jersey_size' => $request->jerseySize,
-                'blood_type' => $request->bloodType,
-                'emergency_name' => $request->emergencyName,
-                'emergency_phone' => $request->emergencyPhone,
-                'community' => $request->community,
-                'medical_notes' => $request->medicalNotes,
-                'payment_proof_path' => $satpamCardPath, // Store satpam card path here
-                'status' => 'pending',
-                'payment_status' => 'pending',
-            ]);
+            'category' => $request->category,
+            'category_type' => $request->categoryType,
+            'unique_price_code' => $uniquePriceCode,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'email' => $request->email,
+            'bib_name' => $request->bibName,
+            'phone' => $request->phone,
+            'birth_date' => $request->birthDate,
+            'gender' => $request->gender,
+            'occupation' => $request->categoryType === 'umum' ? $request->occupation : 'Satpam',
+            'kta_number' => $request->categoryType === 'satpam' ? $request->ktaNumber : null,
+            'id_type' => $request->idType,
+            'id_number' => $request->idNumber,
+            'address' => $request->address,
+            'city' => $request->city,
+            'jersey_size' => $request->jerseySize,
+            'blood_type' => $request->bloodType,
+            'emergency_name' => $request->emergencyName,
+            'emergency_phone' => $request->emergencyPhone,
+            'community' => $request->community,
+            'medical_notes' => $request->medicalNotes,
+            'payment_proof_path' => $satpamCardPath, // Store satpam card path here
+            'status' => 'pending',
+            'payment_status' => 'pending',
+        ]);
         });
 
         // Send confirmation email immediately

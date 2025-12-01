@@ -205,7 +205,7 @@
                             <div class="card-header">
                                 <h3 class="card-title">
                                     @if($registration->category_type === 'satpam')
-                                        Kartu Tanda Satpam
+                                        Bukti KTA
                                     @else
                                         Bukti Pembayaran
                                     @endif
@@ -225,7 +225,7 @@
                                 @endphp
                                 @if($imagePath)
                                 <img src="{{ asset($imagePath) }}" 
-                                     alt="{{ $registration->category_type === 'satpam' ? 'Kartu Tanda Satpam' : 'Bukti Pembayaran' }}" 
+                                     alt="{{ $registration->category_type === 'satpam' ? 'Bukti KTA' : 'Bukti Pembayaran' }}" 
                                      class="img-fluid rounded" 
                                      style="max-height: 500px; width: auto; display: block; margin: 0 auto; cursor: pointer;"
                                      onclick="window.open('{{ asset($imagePath) }}', '_blank')"
