@@ -71,6 +71,9 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
             'Golongan Darah',
             'Alamat',
             'Kota',
+            'Nama Kontak Darurat',
+            'Nomor Kontak Darurat',
+            'Komunitas',
             'Status',
             'Alasan Penolakan (Jika Ditolak)',
             'Tanggal Disetujui/Ditolak',
@@ -115,6 +118,9 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
             $participant->blood_type ?? '-',
             $participant->address ?? '-',
             $participant->city ?? '-',
+            $participant->emergency_name ?? '-',
+            $participant->emergency_phone ?? '-',
+            $participant->community ?? '-',
             $status,
             $rejectionReason,
             $dateColumn,
@@ -154,9 +160,14 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 $sheet->getColumnDimension('M')->setWidth(15);
                 $sheet->getColumnDimension('N')->setWidth(40);
                 $sheet->getColumnDimension('O')->setWidth(20);
-                $sheet->getColumnDimension('P')->setWidth(15);
-                $sheet->getColumnDimension('Q')->setWidth(40);
-                $sheet->getColumnDimension('R')->setWidth(20);
+                // New Columns
+                $sheet->getColumnDimension('P')->setWidth(25); // Emergency Name
+                $sheet->getColumnDimension('Q')->setWidth(18); // Emergency Phone
+                $sheet->getColumnDimension('R')->setWidth(25); // Community
+                // Shifted Columns
+                $sheet->getColumnDimension('S')->setWidth(15); // Status (was P)
+                $sheet->getColumnDimension('T')->setWidth(40); // Reason (was Q)
+                $sheet->getColumnDimension('U')->setWidth(20); // Date (was R)
 
                 // Header dengan judul
                 $sheet->setCellValue('A1', 'SATPAM FUN RUN 5K');
@@ -187,9 +198,9 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                     ],
                 ]);
 
-                // Merge cells untuk judul
-                $sheet->mergeCells('A1:R1');
-                $sheet->mergeCells('A2:R2');
+                // Merge cells untuk judul (extended to U)
+                $sheet->mergeCells('A1:U1');
+                $sheet->mergeCells('A2:U2');
 
                 // Set row height untuk header
                 $sheet->getRowDimension(1)->setRowHeight(30);
@@ -197,7 +208,7 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 $sheet->getRowDimension(6)->setRowHeight(30);
 
                 // Style untuk header tabel (row 6)
-                $headerRange = 'A6:R6';
+                $headerRange = 'A6:U6';
                 $sheet->getStyle($headerRange)->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -224,7 +235,7 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 // Style untuk data rows
                 $lastRow = $sheet->getHighestRow();
                 if ($lastRow > 6) {
-                    $dataRange = 'A7:R' . $lastRow;
+                    $dataRange = 'A7:U' . $lastRow;
                     $sheet->getStyle($dataRange)->applyFromArray([
                         'borders' => [
                             'allBorders' => [
@@ -241,7 +252,7 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                     // Alternating row colors
                     for ($row = 7; $row <= $lastRow; $row++) {
                         if ($row % 2 == 0) {
-                            $sheet->getStyle('A' . $row . ':O' . $row)->applyFromArray([
+                            $sheet->getStyle('A' . $row . ':U' . $row)->applyFromArray([
                                 'fill' => [
                                     'fillType' => Fill::FILL_SOLID,
                                     'startColor' => ['rgb' => 'F8F9FA'],
@@ -252,7 +263,10 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, W
                 }
 
                 // Center alignment untuk kolom tertentu
-                $centerColumns = ['A', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'P'];
+                // A (No), E (Phone), F (DOB), G (Gender), I (CatType), J (KTA), K (Price), L (Jersey), M (Blood)
+                // New: Q (Emg Phone), S (Status)
+                // Removed: P (Status - moved to S)
+                $centerColumns = ['A', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'Q', 'S'];
                 foreach ($centerColumns as $col) {
                     if ($lastRow > 6) {
                         $sheet->getStyle($col . '7:' . $col . $lastRow)->applyFromArray([
